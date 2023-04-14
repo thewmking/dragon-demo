@@ -3,18 +3,21 @@ require 'app/sprites/frog_1.rb'
 
 def tick args
   init(args)
-  handle_input(args)
-  enforce_boundaries(args)  
+  parse_directional_input(args)
+  enforce_boundaries(args)
+  parse_command_input(args)
   render(args)
 end
 
 def render(args)
+  args.outputs.labels << args.state.fireballs
   args.outputs.sprites << [args.state.player_x, args.state.player_y, 100, 80, 'sprites/misc/dragon-0.png']
 end
 
 def init(args)
   args.state.player_x ||= 120
   args.state.player_y ||= 280
+  args.state.fireballs ||= []
   args.state.speed = diagonal?(args) ? 6 : 12
   args.state.player_w = 100
   args.state.player_h = 80
@@ -24,7 +27,7 @@ def diagonal?(args)
   (args.inputs.left_right) && (args.inputs.up_down)
 end
 
-def handle_input(args)
+def parse_directional_input(args)
   args.state.player_x += args.inputs.left_right * args.state.speed
   args.state.player_y += args.inputs.up_down * args.state.speed
 end
@@ -40,6 +43,18 @@ def enforce_boundaries(args)
 
   args.state.player_x = 0 if args.state.player_x < 0
   args.state.player_y = 0 if args.state.player_y < 0
+end
+
+def parse_command_input(args)
+  handle_fireballs(args)
+end
+
+def handle_fireballs(args)
+  if args.inputs.keyboard.key_down.z ||
+     args.inputs.keyboard.key_down.j ||
+     args.inputs.controller_one.key_down.a
+    args.state.fireballs << [args.state.player_x, args.state.player_y, 'fireball']
+  end
 end
 
 # class Sprite
