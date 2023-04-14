@@ -11,8 +11,7 @@ def tick args
 end
 
 def render(args)
-  args.outputs.labels << args.state.fireballs
-  args.outputs.sprites << args.state.player
+  args.outputs.sprites << [args.state.player, args.state.fireballs]
 end
 
 def init(args)
@@ -58,9 +57,11 @@ def handle_fireball_input(args)
      args.inputs.keyboard.key_down.j ||
      args.inputs.controller_one.key_down.a
     args.state.fireballs << {
-      x: args.state.player.x,
-      y: args.state.player.y,
-      text: 'fireball',
+      x: args.state.player.x + args.state.player.w - 12,
+      y: args.state.player.y + 10,
+      w: 32,
+      h: 32,
+      path: 'sprites/misc/fireball.png'
     }
   end
 end
@@ -71,7 +72,7 @@ end
 
 def manage_fireballs(args)
   args.state.fireballs.each do |fireball|
-    fireball.x += 20
+    fireball.x += 15
   end
 end
 
