@@ -1,8 +1,8 @@
 # Remove the pound sign and leading space for the properties below before publishing your game.
 # devid=myname
-# devtitle=My Name
+devtitle=Dragon Attack
 # gameid=mygame
-# gametitle=My Game
+gametitle=Dragon Attack
 # version=0.1
 # icon=metadata/icon.png
 
