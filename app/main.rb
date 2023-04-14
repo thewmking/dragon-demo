@@ -11,7 +11,7 @@ def tick args
 end
 
 def render(args)
-  args.outputs.sprites << [args.state.player, args.state.fireballs]
+  args.outputs.sprites << [args.state.player, args.state.fireballs, args.state.targets]
 end
 
 def init(args)
@@ -24,6 +24,7 @@ def init(args)
     path: 'sprites/misc/dragon-0.png',
   }
   args.state.fireballs ||= []
+  init_targets(args)
 end
 
 def diagonal?(args)
@@ -73,8 +74,39 @@ end
 def manage_fireballs(args)
   args.state.fireballs.each do |fireball|
     fireball.x += 15
+
+    args.state.targets.each do |target|
+      if args.geometry.intersect_rect?(target, fireball)
+        target.dead, fireball.dead = true, true
+      end
+    end
   end
+
+  args.state.targets.reject! { |t| t.dead }
+  args.state.fireballs.reject! { |t| t.dead }
 end
+
+def init_targets(args)
+  args.state.targets ||= [
+    spawn_target(800, 120),
+    spawn_target(920, 600),
+    spawn_target(1020, 320),
+  ]
+end
+
+def spawn_target(x, y)
+  {
+    x: x,
+    y: y,
+    w: 64,
+    h: 64,
+    path: 'sprites/misc/target.png',
+  }
+end
+
+
+
+$gtk.reset
 
 # class Sprite
 #   attr_accessor :x, :y, :w, :h, :path, :angle, :a, :r, :g, :b,
