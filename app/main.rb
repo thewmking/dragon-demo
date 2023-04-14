@@ -6,21 +6,25 @@ def tick args
   parse_directional_input(args)
   enforce_boundaries(args)
   parse_command_input(args)
+  update_animations(args)
   render(args)
 end
 
 def render(args)
   args.outputs.labels << args.state.fireballs
-  args.outputs.sprites << [args.state.player_x, args.state.player_y, 100, 80, 'sprites/misc/dragon-0.png']
+  args.outputs.sprites << args.state.player
 end
 
 def init(args)
-  args.state.player_x ||= 120
-  args.state.player_y ||= 280
+  args.state.player ||= {
+    x: 120,
+    y: 280,
+    w: 100,
+    h: 80,
+    speed: diagonal?(args) ? 6 : 12,
+    path: 'sprites/misc/dragon-0.png',
+  }
   args.state.fireballs ||= []
-  args.state.speed = diagonal?(args) ? 6 : 12
-  args.state.player_w = 100
-  args.state.player_h = 80
 end
 
 def diagonal?(args)
@@ -28,32 +32,46 @@ def diagonal?(args)
 end
 
 def parse_directional_input(args)
-  args.state.player_x += args.inputs.left_right * args.state.speed
-  args.state.player_y += args.inputs.up_down * args.state.speed
+  args.state.player.x += args.inputs.left_right * args.state.player.speed
+  args.state.player.y += args.inputs.up_down * args.state.player.speed
 end
 
 def enforce_boundaries(args)
-  if args.state.player_x + args.state.player_w > args.grid.w
-    args.state.player_x = args.grid.w - args.state.player_w
+  if args.state.player.x + args.state.player.w > args.grid.w
+    args.state.player.x = args.grid.w - args.state.player.w
   end
 
-  if args.state.player_y + args.state.player_h > args.grid.h
-    args.state.player_y = args.grid.h - args.state.player_h
+  if args.state.player.y + args.state.player.h > args.grid.h
+    args.state.player.y = args.grid.h - args.state.player.h
   end
 
-  args.state.player_x = 0 if args.state.player_x < 0
-  args.state.player_y = 0 if args.state.player_y < 0
+  args.state.player.x = 0 if args.state.player.x < 0
+  args.state.player.y = 0 if args.state.player.y < 0
 end
 
 def parse_command_input(args)
-  handle_fireballs(args)
+  handle_fireball_input(args)
 end
 
-def handle_fireballs(args)
+def handle_fireball_input(args)
   if args.inputs.keyboard.key_down.z ||
      args.inputs.keyboard.key_down.j ||
      args.inputs.controller_one.key_down.a
-    args.state.fireballs << [args.state.player_x, args.state.player_y, 'fireball']
+    args.state.fireballs << {
+      x: args.state.player.x,
+      y: args.state.player.y,
+      text: 'fireball',
+    }
+  end
+end
+
+def update_animations(args)
+  manage_fireballs(args)
+end
+
+def manage_fireballs(args)
+  args.state.fireballs.each do |fireball|
+    fireball.x += 20
   end
 end
 
