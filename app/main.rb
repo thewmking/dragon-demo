@@ -20,7 +20,7 @@ def init(args)
     y: 280,
     w: 100,
     h: 80,
-    speed: diagonal?(args) ? 6 : 12,
+    speed: diagonal?(args) ? 8 : 16,
     path: 'sprites/misc/dragon-0.png',
   }
   args.state.fireballs ||= []
@@ -72,34 +72,41 @@ def update_animations(args)
 end
 
 def manage_fireballs(args)
+  deads = 0
   args.state.fireballs.each do |fireball|
     fireball.x += 15
 
     args.state.targets.each do |target|
       if args.geometry.intersect_rect?(target, fireball)
         target.dead, fireball.dead = true, true
+        deads += 1
       end
     end
   end
 
   args.state.targets.reject! { |t| t.dead }
   args.state.fireballs.reject! { |t| t.dead }
+
+  deads.times do
+    args.state.targets << spawn_target(args)
+  end
 end
 
 def init_targets(args)
   args.state.targets ||= [
-    spawn_target(800, 120),
-    spawn_target(920, 600),
-    spawn_target(1020, 320),
+    spawn_target(args),
+    spawn_target(args),
+    spawn_target(args),
   ]
 end
 
-def spawn_target(x, y)
+def spawn_target(args)
+  size = 64
   {
-    x: x,
-    y: y,
-    w: 64,
-    h: 64,
+    x: rand(args.grid.w * 0.4) + args.grid.w * 0.5,
+    y: rand(args.grid.h - size * 2) + size,
+    w: size,
+    h: size,
     path: 'sprites/misc/target.png',
   }
 end
