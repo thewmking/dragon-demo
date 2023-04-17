@@ -1,16 +1,17 @@
-require 'app/sprites/sprite.rb'
-require 'app/sprites/frog_1.rb'
+require 'app/music_handler.rb'
+require 'app/game_over_handler.rb'
 
 FPS = 60
 HIGH_SCORE_FILE = "high-score.txt"
 
 def tick args
   init_timer(args)
-  if game_over?(args)
-    game_over_tick(args)
+  if GameOverHandler.game_over?(args)
+    GameOverHandler.game_over_tick(args)
     return
   end
 
+  MusicHandler.handle_music(args)
   init(args)
   parse_directional_input(args)
   enforce_boundaries(args)
@@ -20,15 +21,6 @@ def tick args
 end
 
 def init(args)
-  if args.state.tick_count == 1
-    args.audio[:music] = { input: "sounds/flight.ogg", looping: true }
-  end
-
-  if args.state.timer == 0
-    args.audio[:music].paused = true
-    args.outputs.sounds << "sounds/game-over.wav"
-  end
-
   args.state.score ||= 0
   args.state.player ||= {
     x: 120,
@@ -162,59 +154,6 @@ def spawn_target(args)
     h: size,
     path: 'sprites/misc/target.png',
   }
-end
-
-def game_over?(args)
-  args.state.timer < 0
-end
-
-def game_over_tick(args)
-  handle_high_score(args)
-  handle_game_over_labels(args)
-
-  if args.state.timer < -30 && fire_input?(args)
-    $gtk.reset
-  end
-end
-
-def handle_game_over_labels(args)
-  labels = [
-    {
-      x: 40,
-      y: args.grid.h - 40,
-      text: "Game Over!",
-      size_enum: 10,
-    },
-    {
-      x: 40,
-      y: args.grid.h - 90,
-      text: "Score: #{args.state.score}",
-      size_enum: 4,
-    },
-    {
-      x: 40,
-      y: args.grid.h - 132,
-      text: "Fire to restart",
-      size_enum: 2,
-    },
-    {
-      x: 260,
-      y: args.grid.h - 90,
-      text: args.state.score > args.state.high_score ? 'New high score!' : "Score to beat: #{args.state.high_score}",
-      size_enum: 3,
-    },
-  ]
-
-  args.outputs.labels << labels
-end
-
-def handle_high_score(args)
-  args.state.high_score ||= args.gtk.read_file(HIGH_SCORE_FILE).to_i
-
-  if !args.state.saved_high_score && args.state.score > args.state.high_score
-    args.gtk.write_file(HIGH_SCORE_FILE, args.state.score.to_s)
-    args.state.saved_high_score = true
-  end
 end
 
 $gtk.reset
