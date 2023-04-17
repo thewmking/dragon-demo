@@ -2,10 +2,15 @@ require 'app/sprites/sprite.rb'
 require 'app/sprites/frog_1.rb'
 
 FPS = 60
+HIGH_SCORE_FILE = "high-score.txt"
 
 def tick args
   init_timer(args)
-  return if render_game_over?(args)
+  if game_over?(args)
+    game_over_tick(args)
+    return
+  end
+
   init(args)
   parse_directional_input(args)
   enforce_boundaries(args)
@@ -29,7 +34,7 @@ def init(args)
 end
 
 def init_timer(args)
-  args.state.timer ||= 30 * FPS
+  args.state.timer ||= 5 * FPS
   args.state.timer -= 1
 end
 
@@ -140,59 +145,57 @@ def spawn_target(args)
   }
 end
 
-def render_game_over?(args)
-  if args.state.timer < 0
-    labels = []
-    labels << {
+def game_over?(args)
+  args.state.timer < 0
+end
+
+def game_over_tick(args)
+  handle_high_score(args)
+  handle_game_over_labels(args)
+
+  if args.state.timer < -30 && fire_input?(args)
+    $gtk.reset
+  end
+end
+
+def handle_game_over_labels(args)
+  labels = [
+    {
       x: 40,
       y: args.grid.h - 40,
       text: "Game Over!",
       size_enum: 10,
-    }
-    labels << {
+    },
+    {
       x: 40,
       y: args.grid.h - 90,
       text: "Score: #{args.state.score}",
       size_enum: 4,
-    }
-    labels << {
+    },
+    {
       x: 40,
       y: args.grid.h - 132,
       text: "Fire to restart",
       size_enum: 2,
-    }
-    args.outputs.labels << labels
+    },
+    {
+      x: 260,
+      y: args.grid.h - 90,
+      text: args.state.score > args.state.high_score ? 'New high score!' : "Score to beat: #{args.state.high_score}",
+      size_enum: 3,
+    },
+  ]
 
-    if args.state.timer < -30 && fire_input?(args)
-      $gtk.reset
-    end
+  args.outputs.labels << labels
+end
 
-    true
+def handle_high_score(args)
+  args.state.high_score ||= args.gtk.read_file(HIGH_SCORE_FILE).to_i
+
+  if !args.state.saved_high_score && args.state.score > args.state.high_score
+    args.gtk.write_file(HIGH_SCORE_FILE, args.state.score.to_s)
+    args.state.saved_high_score = true
   end
 end
 
-
-
 $gtk.reset
-
-# class Sprite
-#   attr_accessor :x, :y, :w, :h, :path, :angle, :a, :r, :g, :b,
-#                 :source_x, :source_y, :source_w, :source_h,
-#                 :tile_x, :tile_y, :tile_w, :tile_h,
-#                 :flip_horizontally, :flip_vertically,
-#                 :angle_anchor_x, :angle_anchor_y, :blendmode_enum
-
-#   def primitive_marker
-#     :sprite
-#   end
-# end
-
-# class Frog1 < Sprite
-#   def initialize opts
-#     @x = opts[:x]
-#     @y = opts[:y]
-#     @w = opts[:w]
-#     @h = opts[:h]
-#     @path = 'mygame/sprites/frogs/frog-1.png'
-#   end
-# end
