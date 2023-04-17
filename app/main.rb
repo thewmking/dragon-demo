@@ -1,5 +1,6 @@
 require 'app/lib/music_handler.rb'
 require 'app/lib/game_over_handler.rb'
+require 'app/lib/cloud_handler.rb'
 require 'app/lib/fireball_handler.rb'
 require 'app/lib/input_handler.rb'
 require 'app/lib/player_handler.rb'
@@ -25,7 +26,8 @@ def init(args)
   PlayerHandler.init_player(args)
 
   FireballHandler.init(args)
-  TargetHandler.init(args)
+  TargetHandler.init(args) 
+  CloudHandler.init(args) 
 
   InputHandler.parse_directional_input(args)
   PlayerHandler.enforce_boundaries(args)
@@ -33,12 +35,22 @@ def init(args)
 end
 
 def init_timer(args)
-  args.state.timer ||= 5 * FPS
+  args.state.timer ||= 30 * FPS
   args.state.timer -= 1
 end
 
 def render(args)
-  args.outputs.sprites << [args.state.player, args.state.fireballs, args.state.targets]
+  args.outputs.solids << {
+    x: 0,
+    y: 0,
+    w: args.grid.w,
+    h: args.grid.h,
+    r: 92,
+    g: 120,
+    b: 230,
+  }
+
+  args.outputs.sprites << [args.state.clouds, args.state.player, args.state.fireballs, args.state.targets]
   args.outputs.labels << {
     x: 40,
     y: args.grid.h - 40,
@@ -56,6 +68,7 @@ end
 
 def update_animations(args)
   FireballHandler.manage_fireballs(args)
+  CloudHandler.manage_clouds(args)
 end
 
 $gtk.reset
