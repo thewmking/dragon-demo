@@ -12,9 +12,16 @@ end
 
 def render(args)
   args.outputs.sprites << [args.state.player, args.state.fireballs, args.state.targets]
+  args.outputs.labels << {
+    x: 40,
+    y: args.grid.h - 40,
+    text: "Score: #{args.state.score}",
+    size_enum: 4,
+  }
 end
 
 def init(args)
+  args.state.score ||= 0
   args.state.player ||= {
     x: 120,
     y: 280,
@@ -80,6 +87,7 @@ def manage_fireballs(args)
       if args.geometry.intersect_rect?(target, fireball)
         target.dead, fireball.dead = true, true
         deads += 1
+        args.state.score += 1
       end
     end
   end
@@ -103,7 +111,7 @@ end
 def spawn_target(args)
   size = 64
   {
-    x: rand(args.grid.w * 0.4) + args.grid.w * 0.5,
+    x: rand((args.grid.w - size) * 0.4) + (args.grid.w - size)* 0.6,
     y: rand(args.grid.h - size * 2) + size,
     w: size,
     h: size,
