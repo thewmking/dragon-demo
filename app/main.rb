@@ -14,12 +14,21 @@ def tick args
   init(args)
   parse_directional_input(args)
   enforce_boundaries(args)
-  parse_fireball_input(args)
+  handle_command_input(args)
   update_animations(args)
   render(args)
 end
 
 def init(args)
+  if args.state.tick_count == 1
+    args.audio[:music] = { input: "sounds/flight.ogg", looping: true }
+  end
+
+  if args.state.timer == 0
+    args.audio[:music].paused = true
+    args.outputs.sounds << "sounds/game-over.wav"
+  end
+
   args.state.score ||= 0
   args.state.player ||= {
     x: 120,
@@ -77,8 +86,13 @@ def enforce_boundaries(args)
   args.state.player.y = 0 if args.state.player.y < 0
 end
 
-def parse_fireball_input(args)
+def handle_command_input(args)
+  if mute_input?(args)
+    args.audio[:music].paused = !args.audio[:music].paused
+  end
+
   if fire_input?(args)
+    args.outputs.sounds << "sounds/fireball.wav"
     args.state.fireballs << {
         x: args.state.player.x + args.state.player.w - 12,
         y: args.state.player.y + 10,
@@ -93,6 +107,10 @@ def fire_input?(args)
   args.inputs.keyboard.key_down.z ||
   args.inputs.keyboard.key_down.j ||
   args.inputs.controller_one.key_down.a
+end
+
+def mute_input?(args)
+  args.inputs.keyboard.key_down.m
 end
 
 def update_animations(args)
@@ -111,6 +129,7 @@ def manage_fireballs(args)
 
     args.state.targets.each do |target|
       if args.geometry.intersect_rect?(target, fireball)
+        args.outputs.sounds << "sounds/target.wav"
         target.dead, fireball.dead = true, true
         deads += 1
         args.state.score += 1
