@@ -1,6 +1,8 @@
 require 'app/sprites/sprite.rb'
 require 'app/sprites/frog_1.rb'
 
+FPS = 60
+
 def tick args
   init_timer(args)
   return if render_game_over?(args)
@@ -27,7 +29,7 @@ def init(args)
 end
 
 def init_timer(args)
-  args.state.timer ||= 30 * 60
+  args.state.timer ||= 30 * FPS
   args.state.timer -= 1
 end
 
@@ -40,10 +42,11 @@ def render(args)
     size_enum: 4,
   }
   args.outputs.labels << {
-    x: 40,
-    y: args.grid.h - 80,
-    text: "Timer: #{(args.state.timer / 60).round}",
+    x: args.grid.w - 40,
+    y: args.grid.h - 40,
+    text: "Timer: #{(args.state.timer / FPS).round}",
     size_enum: 4,
+    alignment_enum: 2,
   }
 end
 
@@ -69,22 +72,22 @@ def enforce_boundaries(args)
   args.state.player.y = 0 if args.state.player.y < 0
 end
 
-def parse_command_input(args)
-  handle_fireball_input(args)
+def parse_fireball_input(args)
+  if fire_input?(args)
+    args.state.fireballs << {
+        x: args.state.player.x + args.state.player.w - 12,
+        y: args.state.player.y + 10,
+        w: 32,
+        h: 32,
+        path: 'sprites/misc/fireball.png'
+      }
+  end
 end
 
-def handle_fireball_input(args)
-  if args.inputs.keyboard.key_down.z ||
-     args.inputs.keyboard.key_down.j ||
-     args.inputs.controller_one.key_down.a
-    args.state.fireballs << {
-      x: args.state.player.x + args.state.player.w - 12,
-      y: args.state.player.y + 10,
-      w: 32,
-      h: 32,
-      path: 'sprites/misc/fireball.png'
-    }
-  end
+def fire_input?(args)
+  args.inputs.keyboard.key_down.z ||
+  args.inputs.keyboard.key_down.j ||
+  args.inputs.controller_one.key_down.a
 end
 
 def update_animations(args)
@@ -160,9 +163,7 @@ def render_game_over?(args)
     }
     args.outputs.labels << labels
 
-    if args.inputs.keyboard.key_down.z ||
-      args.inputs.keyboard.key_down.j ||
-      args.inputs.controller_one.key_down.a
+    if args.state.timer < -30 && fire_input?(args)
       $gtk.reset
     end
 
