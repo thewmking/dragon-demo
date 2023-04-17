@@ -83,6 +83,11 @@ def manage_fireballs(args)
   args.state.fireballs.each do |fireball|
     fireball.x += 15
 
+    if fireball.x > args.grid.w
+      fireball.dead = true
+      next
+    end
+
     args.state.targets.each do |target|
       if args.geometry.intersect_rect?(target, fireball)
         target.dead, fireball.dead = true, true
