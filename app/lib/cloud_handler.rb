@@ -60,7 +60,6 @@ class CloudHandler
       end
 
       if args.state.clouds.count < 4
-        puts 'spawning extra'
         args.state.clouds << spawn_cloud(args)
       end
     end

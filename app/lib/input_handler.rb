@@ -1,6 +1,10 @@
 class InputHandler
   class << self
 
+    def player_is_moving?(args)
+      args.inputs.left_right != 0 || args.inputs.up_down != 0
+    end
+
     def parse_directional_input(args)
       args.state.player.x += args.inputs.left_right * args.state.player.speed
       args.state.player.y += args.inputs.up_down * args.state.player.speed

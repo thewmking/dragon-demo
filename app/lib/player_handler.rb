@@ -11,8 +11,15 @@ class PlayerHandler
         w: 100,
         h: 80,
         speed: InputHandler.diagonal?(args) ? 8 : 16,
-        path: 'sprites/misc/dragon-0.png',
       }
+
+      animate_player(args)
+    end
+
+    def animate_player(args)
+      hold_for = InputHandler.player_is_moving?(args) ? 4 : 8
+      sprite_index = 0.frame_index(count: 6, hold_for: hold_for, repeat: true)
+      args.state.player.path = "sprites/misc/dragon-#{sprite_index}.png"
     end
 
     def enforce_boundaries(args)
