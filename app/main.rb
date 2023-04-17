@@ -2,22 +2,14 @@ require 'app/sprites/sprite.rb'
 require 'app/sprites/frog_1.rb'
 
 def tick args
+  init_timer(args)
+  return if render_game_over?(args)
   init(args)
   parse_directional_input(args)
   enforce_boundaries(args)
   parse_command_input(args)
   update_animations(args)
   render(args)
-end
-
-def render(args)
-  args.outputs.sprites << [args.state.player, args.state.fireballs, args.state.targets]
-  args.outputs.labels << {
-    x: 40,
-    y: args.grid.h - 40,
-    text: "Score: #{args.state.score}",
-    size_enum: 4,
-  }
 end
 
 def init(args)
@@ -32,6 +24,27 @@ def init(args)
   }
   args.state.fireballs ||= []
   init_targets(args)
+end
+
+def init_timer(args)
+  args.state.timer ||= 30 * 60
+  args.state.timer -= 1
+end
+
+def render(args)
+  args.outputs.sprites << [args.state.player, args.state.fireballs, args.state.targets]
+  args.outputs.labels << {
+    x: 40,
+    y: args.grid.h - 40,
+    text: "Score: #{args.state.score}",
+    size_enum: 4,
+  }
+  args.outputs.labels << {
+    x: 40,
+    y: args.grid.h - 80,
+    text: "Timer: #{(args.state.timer / 60).round}",
+    size_enum: 4,
+  }
 end
 
 def diagonal?(args)
@@ -122,6 +135,39 @@ def spawn_target(args)
     h: size,
     path: 'sprites/misc/target.png',
   }
+end
+
+def render_game_over?(args)
+  if args.state.timer < 0
+    labels = []
+    labels << {
+      x: 40,
+      y: args.grid.h - 40,
+      text: "Game Over!",
+      size_enum: 10,
+    }
+    labels << {
+      x: 40,
+      y: args.grid.h - 90,
+      text: "Score: #{args.state.score}",
+      size_enum: 4,
+    }
+    labels << {
+      x: 40,
+      y: args.grid.h - 132,
+      text: "Fire to restart",
+      size_enum: 2,
+    }
+    args.outputs.labels << labels
+
+    if args.inputs.keyboard.key_down.z ||
+      args.inputs.keyboard.key_down.j ||
+      args.inputs.controller_one.key_down.a
+      $gtk.reset
+    end
+
+    true
+  end
 end
 
 
