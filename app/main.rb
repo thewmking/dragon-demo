@@ -1,37 +1,35 @@
-require 'app/music_handler.rb'
-require 'app/game_over_handler.rb'
+require 'app/lib/music_handler.rb'
+require 'app/lib/game_over_handler.rb'
+require 'app/lib/fireball_handler.rb'
+require 'app/lib/input_handler.rb'
+require 'app/lib/player_handler.rb'
 
 FPS = 60
 HIGH_SCORE_FILE = "high-score.txt"
 
 def tick args
   init_timer(args)
+
   if GameOverHandler.game_over?(args)
     GameOverHandler.game_over_tick(args)
     return
   end
 
-  MusicHandler.handle_music(args)
   init(args)
-  parse_directional_input(args)
-  enforce_boundaries(args)
-  handle_command_input(args)
   update_animations(args)
   render(args)
 end
 
 def init(args)
-  args.state.score ||= 0
-  args.state.player ||= {
-    x: 120,
-    y: 280,
-    w: 100,
-    h: 80,
-    speed: diagonal?(args) ? 8 : 16,
-    path: 'sprites/misc/dragon-0.png',
-  }
-  args.state.fireballs ||= []
-  init_targets(args)
+  MusicHandler.handle_music(args)
+  PlayerHandler.init_player(args)
+
+  FireballHandler.init(args)
+  TargetHandler.init(args)
+
+  InputHandler.parse_directional_input(args)
+  PlayerHandler.enforce_boundaries(args)
+  InputHandler.handle_command_input(args)
 end
 
 def init_timer(args)
@@ -56,104 +54,8 @@ def render(args)
   }
 end
 
-def diagonal?(args)
-  (args.inputs.left_right) && (args.inputs.up_down)
-end
-
-def parse_directional_input(args)
-  args.state.player.x += args.inputs.left_right * args.state.player.speed
-  args.state.player.y += args.inputs.up_down * args.state.player.speed
-end
-
-def enforce_boundaries(args)
-  if args.state.player.x + args.state.player.w > args.grid.w
-    args.state.player.x = args.grid.w - args.state.player.w
-  end
-
-  if args.state.player.y + args.state.player.h > args.grid.h
-    args.state.player.y = args.grid.h - args.state.player.h
-  end
-
-  args.state.player.x = 0 if args.state.player.x < 0
-  args.state.player.y = 0 if args.state.player.y < 0
-end
-
-def handle_command_input(args)
-  if mute_input?(args)
-    args.audio[:music].paused = !args.audio[:music].paused
-  end
-
-  if fire_input?(args)
-    args.outputs.sounds << "sounds/fireball.wav"
-    args.state.fireballs << {
-        x: args.state.player.x + args.state.player.w - 12,
-        y: args.state.player.y + 10,
-        w: 32,
-        h: 32,
-        path: 'sprites/misc/fireball.png'
-      }
-  end
-end
-
-def fire_input?(args)
-  args.inputs.keyboard.key_down.z ||
-  args.inputs.keyboard.key_down.j ||
-  args.inputs.controller_one.key_down.a
-end
-
-def mute_input?(args)
-  args.inputs.keyboard.key_down.m
-end
-
 def update_animations(args)
-  manage_fireballs(args)
-end
-
-def manage_fireballs(args)
-  deads = 0
-  args.state.fireballs.each do |fireball|
-    fireball.x += 15
-
-    if fireball.x > args.grid.w
-      fireball.dead = true
-      next
-    end
-
-    args.state.targets.each do |target|
-      if args.geometry.intersect_rect?(target, fireball)
-        args.outputs.sounds << "sounds/target.wav"
-        target.dead, fireball.dead = true, true
-        deads += 1
-        args.state.score += 1
-      end
-    end
-  end
-
-  args.state.targets.reject! { |t| t.dead }
-  args.state.fireballs.reject! { |t| t.dead }
-
-  deads.times do
-    args.state.targets << spawn_target(args)
-  end
-end
-
-def init_targets(args)
-  args.state.targets ||= [
-    spawn_target(args),
-    spawn_target(args),
-    spawn_target(args),
-  ]
-end
-
-def spawn_target(args)
-  size = 64
-  {
-    x: rand((args.grid.w - size) * 0.4) + (args.grid.w - size)* 0.6,
-    y: rand(args.grid.h - size * 2) + size,
-    w: size,
-    h: size,
-    path: 'sprites/misc/target.png',
-  }
+  FireballHandler.manage_fireballs(args)
 end
 
 $gtk.reset

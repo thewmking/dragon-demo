@@ -1,3 +1,5 @@
+require 'app/lib/input_handler.rb'
+
 class GameOverHandler
   class << self
 
@@ -9,7 +11,7 @@ class GameOverHandler
       handle_high_score(args)
       handle_game_over_labels(args)
 
-      if args.state.timer < -30 && fire_input?(args)
+      if args.state.timer < -30 && InputHandler.fire_input?(args)
         $gtk.reset
       end
     end
