@@ -14,7 +14,7 @@ def tick args
   init(args)
   parse_directional_input(args)
   enforce_boundaries(args)
-  parse_command_input(args)
+  parse_fireball_input(args)
   update_animations(args)
   render(args)
 end
