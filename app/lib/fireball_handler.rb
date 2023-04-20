@@ -9,7 +9,7 @@ class FireballHandler
       animate_fireballs(args)
     end
 
-    def init_fireball(args)
+    def spawn_fireball(args)
       args.outputs.sounds << "sounds/fireball.wav"
       args.state.fireballs << {
         x: args.state.player.x + args.state.player.w - 12,
@@ -39,6 +39,7 @@ class FireballHandler
 
         args.state.targets.each do |target|
           if args.geometry.intersect_rect?(target, fireball)
+            args.outputs.sounds << "sounds/target.wav"
             ExplosionHandler.spawn_explosion(args, target)
             fireball.dead, target.dead = true, true
             deads += 1
@@ -51,6 +52,7 @@ class FireballHandler
       args.state.fireballs.reject! { |t| t.dead }
 
       deads.times do
+        next if args.state.targets.count > 5
         args.state.targets << TargetHandler.spawn_target(args)
       end
     end

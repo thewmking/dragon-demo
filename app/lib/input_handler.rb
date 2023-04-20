@@ -21,6 +21,7 @@ class InputHandler
     end
 
     def fire_input?(args)
+      # TODO: key_held.z for fire blast mode
       args.inputs.keyboard.key_down.z ||
       args.inputs.keyboard.key_down.j ||
       args.inputs.controller_one.key_down.a
