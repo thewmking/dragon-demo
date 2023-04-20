@@ -1,6 +1,10 @@
 require 'app/lib/input_handler.rb'
+require 'app/lib/game_play_handler.rb'
 
 class GameOverHandler
+  HIGH_SCORE_FILE = "high-score.txt"
+  SCENE = 'game_over'
+
   class << self
 
     def game_over?(args)
@@ -12,6 +16,7 @@ class GameOverHandler
       handle_game_over_labels(args)
 
       if args.state.timer < -30 && InputHandler.fire_input?(args)
+        args.state.scene = GamePlayHandler::SCENE
         $gtk.reset
       end
     end
