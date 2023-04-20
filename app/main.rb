@@ -16,7 +16,7 @@ def tick args
 end
 
 def init_timer(args)
-  args.state.timer ||= 5 * FPS
+  args.state.timer ||= 30 * FPS
   args.state.timer -= 1
 end
 
