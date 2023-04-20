@@ -1,4 +1,3 @@
-
 class TargetHandler
   class << self
 

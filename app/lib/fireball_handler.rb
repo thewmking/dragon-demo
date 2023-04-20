@@ -1,3 +1,4 @@
+require 'app/lib/explosion_handler.rb'
 require 'app/lib/target_handler.rb'
 
 class FireballHandler
@@ -38,8 +39,8 @@ class FireballHandler
 
         args.state.targets.each do |target|
           if args.geometry.intersect_rect?(target, fireball)
-            args.outputs.sounds << "sounds/target.wav"
-            target.dead, fireball.dead = true, true
+            ExplosionHandler.spawn_explosion(args, target)
+            fireball.dead, target.dead = true, true
             deads += 1
             args.state.score += 1
           end
