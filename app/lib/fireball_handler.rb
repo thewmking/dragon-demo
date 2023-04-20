@@ -5,6 +5,25 @@ class FireballHandler
 
     def init(args)
       args.state.fireballs ||= []
+      animate_fireballs(args)
+    end
+
+    def init_fireball(args)
+      args.outputs.sounds << "sounds/fireball.wav"
+      args.state.fireballs << {
+        x: args.state.player.x + args.state.player.w - 12,
+        y: args.state.player.y + 10,
+        w: 57,
+        h: 31,
+        path: 'sprites/fire/fireball-0.png'
+      }
+    end
+
+    def animate_fireballs(args)
+      args.state.fireballs.each do |f|
+        sprite_index = 0.frame_index(count: 7, hold_for: 8, repeat: true)
+        f.path = "sprites/fire/fireball-#{sprite_index}.png"
+      end
     end
 
     def manage_fireballs(args)

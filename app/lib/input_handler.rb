@@ -1,3 +1,5 @@
+require 'app/lib/fireball_handler.rb'
+
 class InputHandler
   class << self
 
@@ -15,16 +17,7 @@ class InputHandler
         args.audio[:music].paused = !args.audio[:music].paused
       end
 
-      if fire_input?(args)
-        args.outputs.sounds << "sounds/fireball.wav"
-        args.state.fireballs << {
-            x: args.state.player.x + args.state.player.w - 12,
-            y: args.state.player.y + 10,
-            w: 32,
-            h: 32,
-            path: 'sprites/misc/fireball.png'
-          }
-      end
+      FireballHandler.init_fireball(args) if fire_input?(args)
     end
 
     def fire_input?(args)
