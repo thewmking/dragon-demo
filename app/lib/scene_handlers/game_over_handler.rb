@@ -1,5 +1,5 @@
 require 'app/lib/input_handler.rb'
-require 'app/lib/game_play_handler.rb'
+require 'app/lib/scene_handlers/game_play_handler.rb'
 
 class GameOverHandler
   HIGH_SCORE_FILE = "high-score.txt"
@@ -53,12 +53,16 @@ class GameOverHandler
     end
 
     def handle_high_score(args)
-      args.state.high_score ||= args.gtk.read_file(HIGH_SCORE_FILE).to_i
+      load_high_score(args)
 
       if !args.state.saved_high_score && args.state.score > args.state.high_score
         args.gtk.write_file(HIGH_SCORE_FILE, args.state.score.to_s)
         args.state.saved_high_score = true
       end
+    end
+
+    def load_high_score(args)
+      args.state.high_score ||= args.gtk.read_file(HIGH_SCORE_FILE).to_i
     end
 
   end

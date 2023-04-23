@@ -4,7 +4,7 @@ require 'app/lib/fireball_handler.rb'
 require 'app/lib/input_handler.rb'
 require 'app/lib/player_handler.rb'
 require 'app/lib/explosion_handler.rb'
-require 'app/lib/game_over_handler.rb'
+require 'app/lib/scene_handlers/game_over_handler.rb'
 
 class GamePlayHandler
   SCENE = 'game_play'
