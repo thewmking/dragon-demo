@@ -86,18 +86,27 @@ class TitleHandler
     end
 
     def handle_dragon_select(args)
-      args.state.dragon = {
+      args.state.dragon ||= {
         x: 780,
         y: 340,
         w: 200,
         h: 160,
+        source_x: 0,
+        source_y: 0,
+        source_w: 100,
+        source_h: 80,
       }
 
       handle_color_index(args)
 
       args.state.dragon.variant = PlayerHandler::DRAGON_VARIANTS[args.state.color_index]
-      sprite_index = 0.frame_index(count: 6, hold_for: 8, repeat: true)
-      args.state.dragon.path = "sprites/dragons/dragon-#{args.state.dragon.variant}-#{sprite_index}.png"
+
+      if PlayerHandler::SHEET_VARIANTS.include? args.state.dragon.variant
+        animate_dragon_sheet(args) 
+      else
+        animate_dragon(args)
+      end
+
     end
 
     def handle_color_index(args)
@@ -107,6 +116,17 @@ class TitleHandler
       args.state.color_index = 0 if args.state.color_index > (PlayerHandler::DRAGON_VARIANTS.length - 1)
       args.state.color_index = PlayerHandler::DRAGON_VARIANTS.length - 1 if args.state.color_index < 0
     end
+
+    def animate_dragon(args)
+      sprite_index = 0.frame_index(count: 6, hold_for: 8, repeat: true)
+      args.state.dragon.path = "sprites/dragons/dragon-#{args.state.dragon.variant}-#{sprite_index}.png"
+    end
+
+    # unused
+    # def animate_dragon_sheet(args)
+    #   args.state.dragon.path ||= "sprites/dragons/dragon-#{args.state.dragon.variant}-sheet.png"
+    #   args.state.dragon.source_x = args.state.dragon.source_w * 0.frame_index(count: 6, hold_for: 8, repeat: true)
+    # end
 
     def render(args)
       args.outputs.sprites << [

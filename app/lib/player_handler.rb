@@ -8,6 +8,7 @@ class PlayerHandler
   DRAGON_RED    = 'red'
   DRAGON_YELLOW = 'yellow'
   DRAGON_BLACK  = 'black'
+  DRAGON_WHITE  = 'white'
 
   DRAGON_VARIANTS = [
     DRAGON_PINK,
@@ -16,7 +17,14 @@ class PlayerHandler
     DRAGON_RED,
     DRAGON_YELLOW,
     DRAGON_BLACK,
+    DRAGON_WHITE,
   ]
+
+  SHEET_VARIANTS = [
+    # DRAGON_BLACK,
+    # DRAGON_WHITE,
+  ]
+
   class << self
 
     def init_player(args)
@@ -26,10 +34,18 @@ class PlayerHandler
         y: 280,
         w: 100,
         h: 80,
+        source_x: 0,
+        source_y: 0,
+        source_w: 100,
+        source_h: 80,
         speed: InputHandler.diagonal?(args) ? 8 : 16,
       }
 
-      animate_player(args)
+      if SHEET_VARIANTS.include? args.state.dragon.variant
+        animate_player_sheet(args) 
+      else
+        animate_player(args)
+      end
     end
 
     def animate_player(args)
@@ -37,6 +53,14 @@ class PlayerHandler
       hold_for = InputHandler.player_is_moving?(args) ? 4 : 8
       sprite_index = 0.frame_index(count: 6, hold_for: hold_for, repeat: true)
       args.state.player.path = "sprites/dragons/dragon-#{args.state.dragon.variant}-#{sprite_index}.png"
+    end
+
+    # unused
+    def animate_player_sheet(args)
+      return unless args.state.play
+      args.state.player.path ||= "sprites/dragons/dragon-#{args.state.dragon.variant}-sheet.png"
+      hold_for = InputHandler.player_is_moving?(args) ? 4 : 8
+      args.state.player.source_x = args.state.player.source_w * 0.frame_index(count: 6, hold_for: hold_for, repeat: true)
     end
 
     def enforce_boundaries(args)
@@ -51,5 +75,6 @@ class PlayerHandler
       args.state.player.x = 0 if args.state.player.x < 0
       args.state.player.y = 0 if args.state.player.y < 0
     end
+
   end
 end
