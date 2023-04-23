@@ -5,7 +5,6 @@ require 'app/lib/scene_handlers/title_handler.rb'
 FPS = 60
 
 def tick args
-  init_timer(args)
 
   args.state.scene ||= TitleHandler::SCENE
 
@@ -15,11 +14,6 @@ def tick args
   when TitleHandler::SCENE    then TitleHandler.title_tick(args)
   end
 
-end
-
-def init_timer(args)
-  args.state.timer ||= 30 * FPS
-  args.state.timer -= 1
 end
 
 $gtk.reset

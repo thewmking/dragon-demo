@@ -7,18 +7,20 @@ class GameOverHandler
 
   class << self
 
-    def game_over?(args)
-      args.state.timer < 0
-    end
-
     def game_over_tick(args)
+      args.state.timer ||= 0
       handle_high_score(args)
       handle_game_over_labels(args)
 
-      if args.state.timer < -30 && InputHandler.fire_input?(args)
+      if args.state.timer < -60 || InputHandler.fire_input?(args)
         args.state.scene = GamePlayHandler::SCENE
         $gtk.reset
       end
+    end
+
+    def init_timer(args)
+      args.state.timer ||= 0
+      args.state.timer -= 1
     end
 
     def handle_game_over_labels(args)

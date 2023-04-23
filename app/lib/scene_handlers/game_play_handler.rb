@@ -11,7 +11,9 @@ class GamePlayHandler
   class << self
 
     def game_play_tick args
-      if args.state.timer == 0
+      init_timer(args)
+
+      if args.state.timer < 0
         args.state.scene = GameOverHandler::SCENE
         return
       end
@@ -19,6 +21,11 @@ class GamePlayHandler
       init_gameplay(args)
       update_animations(args)
       render(args)
+    end
+
+    def init_timer(args)
+      args.state.timer ||= 5 * FPS
+      args.state.timer -= 1
     end
 
     def init_gameplay(args)
