@@ -44,6 +44,7 @@ class CloudHandler
     end
 
     def manage_clouds(args)
+      return unless args.state.play
       deads = 0
       args.state.clouds.each do |cloud|
         cloud.x -= cloud.speed 

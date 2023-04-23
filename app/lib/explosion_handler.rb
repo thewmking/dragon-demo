@@ -21,6 +21,7 @@ class ExplosionHandler
     end
 
     def manage_explosions(args)
+      return unless args.state.play
       args.state.explosions.each do |e|
         sprite_index = e.init_tick.frame_index(count: 7, hold_for: 5, repeat: false)
         e.path = "sprites/misc/explosion-#{sprite_index}.png"

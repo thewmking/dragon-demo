@@ -1,4 +1,5 @@
 require 'app/lib/input_handler.rb'
+require 'app/lib/music_handler.rb'
 require 'app/lib/scene_handlers/game_play_handler.rb'
 
 class GameOverHandler
@@ -8,11 +9,11 @@ class GameOverHandler
   class << self
 
     def game_over_tick(args)
-      args.state.timer ||= 0
+      init_timer(args)
       handle_high_score(args)
       handle_game_over_labels(args)
 
-      if args.state.timer < -60 || InputHandler.fire_input?(args)
+      if args.state.timer < -30 && InputHandler.fire_input?(args)
         args.state.scene = GamePlayHandler::SCENE
         $gtk.reset
       end

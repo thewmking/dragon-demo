@@ -21,6 +21,7 @@ class InputHandler
     end
 
     def fire_input?(args)
+      return unless args.state.play
       # TODO: key_held.z for fire blast mode
       # args.inputs.keyboard.key_held.z ||
       args.inputs.keyboard.key_down.z ||
@@ -44,6 +45,10 @@ class InputHandler
     def key_up_right?(args)
       args.inputs.keyboard.key_up.right ||
       args.inputs.controller_one.key_up.right
+    end
+
+    def input_pause?(args)
+      args.inputs.keyboard.key_down.p
     end
 
   end

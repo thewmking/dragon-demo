@@ -7,6 +7,7 @@ FPS = 60
 def tick args
 
   args.state.scene ||= TitleHandler::SCENE
+  args.state.play ||= true unless args.state.play == false
 
   case args.state.scene
   when GamePlayHandler::SCENE then GamePlayHandler.game_play_tick(args)

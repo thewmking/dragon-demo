@@ -21,6 +21,7 @@ class FireballHandler
     end
 
     def animate_fireballs(args)
+      return unless args.state.play
       args.state.fireballs.each do |f|
         sprite_index = 0.frame_index(count: 7, hold_for: 8, repeat: true)
         f.path = "sprites/fire/fireball-#{sprite_index}.png"
@@ -28,6 +29,7 @@ class FireballHandler
     end
 
     def manage_fireballs(args)
+      return unless args.state.play
       deads = 0
       args.state.fireballs.each do |fireball|
         fireball.x += 15
