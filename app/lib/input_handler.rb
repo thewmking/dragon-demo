@@ -22,6 +22,7 @@ class InputHandler
 
     def fire_input?(args)
       # TODO: key_held.z for fire blast mode
+      # args.inputs.keyboard.key_held.z ||
       args.inputs.keyboard.key_down.z ||
       args.inputs.keyboard.key_down.j ||
       args.inputs.controller_one.key_down.a
@@ -33,6 +34,16 @@ class InputHandler
 
     def diagonal?(args)
       (args.inputs.left_right) && (args.inputs.up_down)
+    end
+
+    def key_up_left?(args)
+      args.inputs.keyboard.key_up.left ||
+      args.inputs.controller_one.key_up.left
+    end
+
+    def key_up_right?(args)
+      args.inputs.keyboard.key_up.right ||
+      args.inputs.controller_one.key_up.right
     end
 
   end

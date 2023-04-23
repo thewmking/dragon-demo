@@ -1,6 +1,22 @@
 require 'app/lib/input_handler.rb'
 
 class PlayerHandler
+
+  DRAGON_PINK   = 'pink'
+  DRAGON_GREEN  = 'green'
+  DRAGON_BLUE   = 'blue'
+  DRAGON_RED    = 'red'
+  DRAGON_YELLOW = 'yellow'
+  DRAGON_BLACK  = 'black'
+
+  DRAGON_VARIANTS = [
+    DRAGON_PINK,
+    DRAGON_GREEN,
+    DRAGON_BLUE,
+    DRAGON_RED,
+    DRAGON_YELLOW,
+    DRAGON_BLACK,
+  ]
   class << self
 
     def init_player(args)
