@@ -35,7 +35,7 @@ class PlayerHandler
     def animate_player(args)
       hold_for = InputHandler.player_is_moving?(args) ? 4 : 8
       sprite_index = 0.frame_index(count: 6, hold_for: hold_for, repeat: true)
-      args.state.player.path = "sprites/misc/dragon-#{sprite_index}.png"
+      args.state.player.path = "sprites/dragons/dragon-#{args.state.dragon.variant}-#{sprite_index}.png"
     end
 
     def enforce_boundaries(args)
