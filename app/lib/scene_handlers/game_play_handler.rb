@@ -14,6 +14,8 @@ class GamePlayHandler
       init_timer(args)
 
       if args.state.timer < 0
+        MusicHandler.stop_music(args)
+        MusicHandler.game_over_sound(args)
         args.state.scene = GameOverHandler::SCENE
         return
       end
@@ -94,6 +96,12 @@ class GamePlayHandler
     def handle_pause(args)
       if InputHandler.input_pause?(args)
         args.state.play = !args.state.play
+
+        if args.state.play == false
+          args.audio[:music].paused = true
+        else
+          args.audio[:music].paused = false
+        end
       end
     end
   end
