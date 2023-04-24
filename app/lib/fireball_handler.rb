@@ -40,6 +40,7 @@ class FireballHandler
         end
 
         args.state.targets.each do |target|
+          next if target.x > args.grid.w
           if args.geometry.intersect_rect?(target, fireball)
             args.outputs.sounds << "sounds/target.wav"
             ExplosionHandler.spawn_explosion(args, target)
@@ -54,8 +55,7 @@ class FireballHandler
       args.state.fireballs.reject! { |t| t.dead }
 
       deads.times do
-        next if args.state.targets.count > 5
-        args.state.targets << TargetHandler.spawn_target(args)
+        TargetHandler.spawn_target(args)
       end
     end
 

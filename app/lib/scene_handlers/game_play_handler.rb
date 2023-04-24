@@ -26,12 +26,11 @@ class GamePlayHandler
     end
 
     def init_timer(args)
-      args.state.timer ||= 5 * FPS
+      args.state.timer ||= 30 * FPS
       args.state.timer -= 1 unless args.state.play == false
     end
 
     def init_gameplay(args)
-      handle_pause(args)
       MusicHandler.start_music(args)
       PlayerHandler.init_player(args)
 
@@ -90,19 +89,9 @@ class GamePlayHandler
     def update_animations(args)
       FireballHandler.manage_fireballs(args)
       CloudHandler.manage_clouds(args)
+      TargetHandler.manage_targets(args)
       ExplosionHandler.manage_explosions(args)
     end
 
-    def handle_pause(args)
-      if InputHandler.input_pause?(args)
-        args.state.play = !args.state.play
-
-        if args.state.play == false
-          args.audio[:music].paused = true
-        else
-          args.audio[:music].paused = false
-        end
-      end
-    end
   end
 end

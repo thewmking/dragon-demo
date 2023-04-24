@@ -57,7 +57,7 @@ class CloudHandler
       args.state.clouds.reject! { |c| c.dead }
 
       deads.times do
-        args.state.targets << spawn_cloud(args)
+        args.state.clouds << spawn_cloud(args)
       end
 
       if args.state.clouds.count < 4

@@ -17,7 +17,21 @@ class InputHandler
         args.audio[:music].paused = !args.audio[:music].paused
       end
 
+      handle_pause(args)
+
       FireballHandler.spawn_fireball(args) if fire_input?(args)
+    end
+
+    def handle_pause(args)
+      if input_pause?(args)
+        args.state.play = !args.state.play
+
+        if args.state.play == false
+          args.audio[:music].paused = true
+        else
+          args.audio[:music].paused = false
+        end
+      end
     end
 
     def fire_input?(args)

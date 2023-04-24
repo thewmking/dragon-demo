@@ -1,23 +1,49 @@
 class TargetHandler
-  class << self
+  TARGET_SPEED_RANGE = [1,2,3]
 
+  class << self
     def init(args)
-      args.state.targets ||= [
-        spawn_target(args),
-        spawn_target(args),
-        spawn_target(args),
-      ]
+      if args.state.targets.nil?
+        args.state.targets ||= []
+        3.times do 
+          spawn_target(args)
+        end
+      end
     end
 
     def spawn_target(args)
+      return if args.state.targets.count > 5
       size = 64
-      {
-        x: rand((args.grid.w - size) * 0.4) + (args.grid.w - size)* 0.6,
+      target = {
+        x: size + args.grid.w,
         y: rand(args.grid.h - size * 2) + size,
         w: size,
         h: size,
         path: 'sprites/misc/target.png',
+        speed: (TARGET_SPEED_RANGE.sample * 0.25 * 7.0),
       }
+
+      args.state.targets << target
+    end
+
+    def manage_targets(args)
+      return unless args.state.play
+      deads = 0
+
+      args.state.targets.each do |target|
+        target.x -= target.speed
+
+        if target.x < (0-target.w)
+          target.dead = true
+          deads += 1
+        end
+      end
+
+      args.state.targets.reject! { |t| t.dead }
+
+      deads.times do
+        TargetHandler.spawn_target(args)
+      end
     end
 
   end
