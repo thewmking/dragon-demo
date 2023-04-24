@@ -1,10 +1,10 @@
 # Remove the pound sign and leading space for the properties below before publishing your game.
-# devid=myname
-devtitle=Dragon Attack
-# gameid=mygame
+devid=thewmking
+devtitle=thewmking
+gameid=dragon-attack
 gametitle=Dragon Attack
-# version=0.1
-# icon=metadata/icon.png
+version=0.1
+icon=metadata/icon.png
 
 # === Flags available at all licensing tiers ===
 
