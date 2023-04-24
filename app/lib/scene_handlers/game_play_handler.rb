@@ -8,12 +8,15 @@ require 'app/lib/scene_handlers/game_over_handler.rb'
 
 class GamePlayHandler
   SCENE = 'game_play'
+  FPS = 60
+
   class << self
 
     def game_play_tick args
       init_timer(args)
 
       if args.state.timer < 0
+        args.state.player.fire_blast_timer = 0
         MusicHandler.stop_music(args)
         MusicHandler.game_over_sound(args)
         args.state.scene = GameOverHandler::SCENE
@@ -84,6 +87,13 @@ class GamePlayHandler
         text: "Game paused",
         size_enum: 4,
       } if !args.state.play
+
+      args.outputs.labels << {
+        x: 500,
+        y: 100,
+        text: "HOLD Z FOR FIRE BLAST!",
+        size_enum: 4,
+      } if args.state.player.fire_blast_timer > 0
     end
 
     def update_animations(args)

@@ -13,6 +13,7 @@ class TargetHandler
 
     def spawn_target(args)
       return if args.state.targets.count > 5
+      return spawn_green(args) if rand < 0.05
       size = 64
       target = {
         x: size + args.grid.w,
@@ -21,6 +22,21 @@ class TargetHandler
         h: size,
         path: 'sprites/misc/target.png',
         speed: (TARGET_SPEED_RANGE.sample * 0.25 * 7.0),
+      }
+
+      args.state.targets << target
+    end
+
+    def spawn_green(args)
+      size = 32
+      target = {
+        x: size + args.grid.w,
+        y: rand(args.grid.h - 64 * 2) + 64,
+        w: size,
+        h: size,
+        path: 'sprites/misc/target-green.png',
+        speed: (TARGET_SPEED_RANGE.sample * 0.5 * 10.0),
+        green: true,
       }
 
       args.state.targets << target

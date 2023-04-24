@@ -2,8 +2,6 @@ require 'app/lib/scene_handlers/game_over_handler.rb'
 require 'app/lib/scene_handlers/game_play_handler.rb'
 require 'app/lib/scene_handlers/title_handler.rb'
 
-FPS = 60
-
 def tick args
 
   args.state.scene ||= TitleHandler::SCENE

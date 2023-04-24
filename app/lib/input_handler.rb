@@ -36,11 +36,25 @@ class InputHandler
 
     def fire_input?(args)
       return unless args.state.play
-      # TODO: key_held.z for fire blast mode
-      # args.inputs.keyboard.key_held.z ||
+
+      if args.state.player && args.state.player.fire_blast_timer > 0
+        fire_blast?(args)
+      else
+        fire_standard?(args)
+      end
+
+    end
+
+    def fire_standard?(args)
       args.inputs.keyboard.key_down.z ||
       args.inputs.keyboard.key_down.j ||
       args.inputs.controller_one.key_down.a
+    end
+
+    def fire_blast?(args)
+      args.inputs.keyboard.key_held.z ||
+      args.inputs.keyboard.key_held.j ||
+      args.inputs.controller_one.key_held.a
     end
 
     def mute_input?(args)
