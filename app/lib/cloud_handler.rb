@@ -34,7 +34,7 @@ class CloudHandler
     def spawn_cloud(args)
       cloud = CLOUDS.sample
       {
-        x: rand(args.grid.w) + args.grid.w / 2,
+        x: rand(cloud.w) + args.grid.w,
         y: rand(args.grid.h - cloud[:h] * 2) + cloud[:h],
         w: cloud[:w],
         h: cloud[:h],
