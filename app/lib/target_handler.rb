@@ -23,34 +23,42 @@ class TargetHandler
     def spawn_target(args)
       return if args.state.targets.count > 5
       return spawn_powerup_target(args) if rand < 0.05
+
+      args.state.targets << gen_target_normal(args)
+    end
+
+    def spawn_powerup_target(args)
+      args.state.targets << gen_target_powerup(args)
+    end
+
+    def gen_target_normal(args, x: nil, y: nil)
       size = 64
-      target = {
-        x: size + args.grid.w,
-        y: rand(args.grid.h - size * 2) + size,
+      x ||= size + args.grid.w
+      y ||= rand(args.grid.h - size * 2) + size
+      {
+        x: x,
+        y: y,
         w: size,
         h: size,
         path: 'sprites/misc/target.png',
         speed: (TARGET_SPEED_RANGE.sample * 0.25 * 7.0),
         powerup: false,
       }
-
-      args.state.targets << target
     end
 
-    def spawn_powerup_target(args)
-      variant = POWERUPS.sample
+    def gen_target_powerup(args, powerup: POWERUPS.sample, x: nil, y: nil)
       size = 60
-      target = {
-        x: size + args.grid.w,
-        y: rand(args.grid.h - 64 * 2) + 64,
+      x ||= size + args.grid.w
+      y ||= rand(args.grid.h - size * 2) + size
+      {
+        x: x,
+        y: y,
         w: size,
         h: size,
-        path: "sprites/powerups/#{variant}-0.png",
+        path: "sprites/powerups/#{powerup}-0.png",
         speed: (TARGET_SPEED_RANGE.sample * 0.5 * 10.0),
-        powerup: variant,
+        powerup: powerup,
       }
-
-      args.state.targets << target
     end
 
     def manage_targets(args)
