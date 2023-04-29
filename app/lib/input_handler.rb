@@ -37,8 +37,8 @@ class InputHandler
     def fire_input?(args)
       return unless args.state.play
 
-      if args.state.player && args.state.player.fire_blast_timer > 0
-        fire_blast?(args)
+      if args.state.player && args.state.player.flame_thrower_timer > 0
+        flame_thrower?(args)
       else
         fire_standard?(args)
       end
@@ -51,7 +51,7 @@ class InputHandler
       args.inputs.controller_one.key_down.a
     end
 
-    def fire_blast?(args)
+    def flame_thrower?(args)
       args.inputs.keyboard.key_held.z ||
       args.inputs.keyboard.key_held.j ||
       args.inputs.controller_one.key_held.a

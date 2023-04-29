@@ -47,7 +47,7 @@ class FireballHandler
             fireball.dead, target.dead = true, true
 
             ExplosionHandler.spawn_explosion(args, target)
-            PlayerHandler.enable_fire_blast(args) if target.green
+            PlayerHandler.enable_flame_thrower(args) if target.green
 
             deads += 1
             args.state.score += 1

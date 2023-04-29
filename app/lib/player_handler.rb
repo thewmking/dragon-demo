@@ -39,10 +39,10 @@ class PlayerHandler
         source_w: 100,
         source_h: 80,
         speed: InputHandler.diagonal?(args) ? 8 : 16,
-        fire_blast_timer: 0
+        flame_thrower_timer: 0
       }
 
-      args.state.player.fire_blast_timer -= 1 if args.state.player.fire_blast_timer > 0
+      args.state.player.flame_thrower_timer -= 1 if args.state.player.flame_thrower_timer > 0
 
       if SHEET_VARIANTS.include? args.state.dragon.variant
         animate_player_sheet(args) 
@@ -79,8 +79,8 @@ class PlayerHandler
       args.state.player.y = 0 if args.state.player.y < 0
     end
 
-    def enable_fire_blast(args)
-      args.state.player.fire_blast_timer = GamePlayHandler::FPS * 5
+    def enable_flame_thrower(args)
+      args.state.player.flame_thrower_timer = GamePlayHandler::FPS * 5
     end
 
   end
