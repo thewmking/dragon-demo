@@ -90,14 +90,14 @@ class GamePlayHandler
       } if !args.state.play
 
       args.outputs.labels << {
-        x: 500,
+        x: 20,
         y: 100,
-        text: "HOLD Z FOR FLAMETHROWER!",
+        text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
         size_enum: 4,
       } if args.state.player.flame_thrower_timer > 0
 
       args.outputs.labels << {
-        x: 475,
+        x: 20,
         y: 70,
         text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
         size_enum: 4,
