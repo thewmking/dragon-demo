@@ -1,5 +1,6 @@
 require 'app/lib/input_handler.rb'
 require 'app/lib/player_handler.rb'
+require 'app/lib/target_handler.rb'
 require 'app/lib/scene_handlers/game_play_handler.rb'
 require 'app/lib/scene_handlers/game_over_handler.rb'
 
@@ -18,6 +19,7 @@ class TitleHandler
       GameOverHandler.load_high_score(args)
       handle_title_labels(args)
       handle_dragon_select(args)
+      handle_powerups(args)
       render(args)
     end
 
@@ -41,8 +43,23 @@ class TitleHandler
         },
         {
           x: 40,
-          y: 120,
-          text: "Arrows or WASD to move | Z or J to fire | gamepad works too",
+          y: args.grid.h - 160,
+          text: "Controls: Arrows or WASD to move | Z or J to fire | Gamepad",
+        },
+        {
+          x: 40,
+          y: 500,
+          text: "Look out for powerups:",
+        },
+        {
+          x: 60,
+          y: 450,
+          text: "Flamethrower:",
+        },
+        {
+          x: 60,
+          y: 375,
+          text: "Fire blast:",
         },
         {
           x: 40,
@@ -122,6 +139,21 @@ class TitleHandler
       args.state.dragon.path = "sprites/dragons/dragon-#{args.state.dragon.variant}-#{sprite_index}.png"
     end
 
+    def handle_powerups(args)
+      args.state.powerups = [
+        TargetHandler.gen_target_powerup(args, powerup: TargetHandler::POWERUP_FIRE_BLAST, x: 200, y: 335 ),
+        TargetHandler.gen_target_powerup(args, powerup: TargetHandler::POWERUP_FLAMETHROWER, x: 200, y: 410 )
+      ]
+      animate_powerups(args)
+    end
+
+    def animate_powerups(args)
+      args.state.powerups.each do |t|
+        sprite_index = 0.frame_index(count: 2, hold_for: 8, repeat: true)
+        t.path = "sprites/powerups/#{t.powerup}-#{sprite_index}.png"
+      end
+    end
+
     # unused
     # def animate_dragon_sheet(args)
     #   args.state.dragon.path ||= "sprites/dragons/dragon-#{args.state.dragon.variant}-sheet.png"
@@ -131,6 +163,7 @@ class TitleHandler
     def render(args)
       args.outputs.sprites << [
         args.state.dragon,
+        args.state.powerups,
       ]
     end
   end
