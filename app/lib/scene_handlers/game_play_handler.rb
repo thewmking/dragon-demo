@@ -83,7 +83,7 @@ class GamePlayHandler
       }
 
       args.outputs.labels << {
-        x: args.grid.w / 2,
+        x: (args.grid.w / 2) - 80,
         y: args.grid.h / 2,
         text: "Game paused",
         size_enum: 4,
@@ -97,8 +97,8 @@ class GamePlayHandler
       } if args.state.player.flame_thrower_timer > 0
 
       args.outputs.labels << {
-        x: 500,
-        y: 80,
+        x: 475,
+        y: 70,
         text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
         size_enum: 4,
       } if args.state.player.fire_blast_timer > 0
