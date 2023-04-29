@@ -8,6 +8,7 @@ class InputHandler
     end
 
     def parse_directional_input(args)
+      return unless args.state.play
       args.state.player.x += args.inputs.left_right * args.state.player.speed
       args.state.player.y += args.inputs.up_down * args.state.player.speed
     end
