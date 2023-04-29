@@ -46,11 +46,12 @@ class FireballHandler
             args.outputs.sounds << "sounds/target.wav"
             fireball.dead, target.dead = true, true
 
+            # TODO: sparkle explosion on powerup hit
             ExplosionHandler.spawn_explosion(args, target)
-            PlayerHandler.enable_flame_thrower(args) if target.green
+            PlayerHandler.enable_flame_thrower(args) if target.powerup == TargetHandler::POWERUP_FLAMETHROWER
 
             deads += 1
-            args.state.score += 1
+            args.state.score += 1 unless target.powerup
           end
         end
       end
