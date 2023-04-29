@@ -19,7 +19,13 @@ class InputHandler
 
       handle_pause(args)
 
-      FireballHandler.spawn_fireball(args) if fire_input?(args)
+      if fire_input?(args)
+        if args.state.player.fire_blast_timer > 0
+          FireballHandler.spawn_multiple(args)
+        else
+          FireballHandler.spawn_fireball(args)
+        end
+      end
     end
 
     def handle_pause(args)

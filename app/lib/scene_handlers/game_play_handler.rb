@@ -17,6 +17,7 @@ class GamePlayHandler
 
       if args.state.timer < 0
         args.state.player.flame_thrower_timer = 0
+        args.state.player.fire_blast_timer = 0
         MusicHandler.stop_music(args)
         MusicHandler.game_over_sound(args)
         args.state.scene = GameOverHandler::SCENE
@@ -76,7 +77,7 @@ class GamePlayHandler
       args.outputs.labels << {
         x: args.grid.w - 40,
         y: args.grid.h - 40,
-        text: "Timer: #{(args.state.timer / FPS).round}",
+        text: "Timer: #{(args.state.timer / FPS).round}s",
         size_enum: 4,
         alignment_enum: 2,
       }
@@ -94,6 +95,13 @@ class GamePlayHandler
         text: "HOLD Z FOR FLAMETHROWER!",
         size_enum: 4,
       } if args.state.player.flame_thrower_timer > 0
+
+      args.outputs.labels << {
+        x: 500,
+        y: 80,
+        text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
+        size_enum: 4,
+      } if args.state.player.fire_blast_timer > 0
     end
 
     def update_animations(args)

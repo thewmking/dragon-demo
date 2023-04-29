@@ -2,6 +2,12 @@ class TargetHandler
   TARGET_SPEED_RANGE = [1,2,3]
 
   POWERUP_FLAMETHROWER = 'flamethrower'
+  POWERUP_FIRE_BLAST = 'fire_blast'
+
+  POWERUPS = [
+    POWERUP_FLAMETHROWER,
+    POWERUP_FIRE_BLAST,
+  ]
 
   class << self
     def init(args)
@@ -16,7 +22,7 @@ class TargetHandler
 
     def spawn_target(args)
       return if args.state.targets.count > 5
-      return spawn_flamethrower_target(args)# if rand < 0.05
+      return spawn_powerup_target(args) if rand < 0.05
       size = 64
       target = {
         x: size + args.grid.w,
@@ -31,16 +37,17 @@ class TargetHandler
       args.state.targets << target
     end
 
-    def spawn_flamethrower_target(args)
+    def spawn_powerup_target(args)
+      variant = POWERUPS.sample
       size = 60
       target = {
         x: size + args.grid.w,
         y: rand(args.grid.h - 64 * 2) + 64,
         w: size,
         h: size,
-        path: 'sprites/powerups/flamethrower-0.png',
+        path: "sprites/powerups/#{variant}-0.png",
         speed: (TARGET_SPEED_RANGE.sample * 0.5 * 10.0),
-        powerup: POWERUP_FLAMETHROWER,
+        powerup: variant,
       }
 
       args.state.targets << target
@@ -68,10 +75,14 @@ class TargetHandler
 
     def animate_powerup_targets(args)
       return unless args.state.play
-      args.state.targets.select{ |t| t.powerup }.each do |t|
-        sprite_index = 0.frame_index(count: 2, hold_for: 4, repeat: true)
+      powerup_targets(args).each do |t|
+        sprite_index = 0.frame_index(count: 2, hold_for: 8, repeat: true)
         t.path = "sprites/powerups/#{t.powerup}-#{sprite_index}.png"
       end
+    end
+
+    def powerup_targets(args)
+      args.state.targets.select{ |t| t.powerup }
     end
 
   end

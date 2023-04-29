@@ -5,19 +5,29 @@ require 'app/lib/target_handler.rb'
 class FireballHandler
   class << self
 
+    TRAJECTORY_RIGHT = 'right'
+    TRAJECTORY_DOWN  = 'down'
+    TRAJECTORY_UP    = 'up'
+
     def init(args)
       args.state.fireballs ||= []
       animate_fireballs(args)
     end
 
-    def spawn_fireball(args)
-      args.outputs.sounds << "sounds/fireball.wav"
+    def spawn_multiple(args)
+      spawn_fireball(args, trajectory: TRAJECTORY_RIGHT)
+      spawn_fireball(args, trajectory: TRAJECTORY_DOWN)
+      spawn_fireball(args, trajectory: TRAJECTORY_UP)
+    end
+
+    def spawn_fireball(args, trajectory: TRAJECTORY_RIGHT)
       args.state.fireballs << {
         x: args.state.player.x + args.state.player.w - 12,
         y: args.state.player.y + 10,
         w: 57,
         h: 31,
-        path: 'sprites/fire/fireball-0.png'
+        path: 'sprites/fire/fireball-0.png',
+        trajectory: trajectory,
       }
     end
 
@@ -34,8 +44,10 @@ class FireballHandler
       deads = 0
       args.state.fireballs.each do |fireball|
         fireball.x += 15
+        fireball.y -= 5 if fireball.trajectory == TRAJECTORY_DOWN
+        fireball.y += 5 if fireball.trajectory == TRAJECTORY_UP
 
-        if fireball.x > args.grid.w
+        if (fireball.x > args.grid.w) || (fireball.y > args.grid.h) || (fireball.y < 0)
           fireball.dead = true
           next
         end
@@ -49,6 +61,7 @@ class FireballHandler
             # TODO: sparkle explosion on powerup hit
             ExplosionHandler.spawn_explosion(args, target)
             PlayerHandler.enable_flame_thrower(args) if target.powerup == TargetHandler::POWERUP_FLAMETHROWER
+            PlayerHandler.enable_fire_blast(args) if target.powerup == TargetHandler::POWERUP_FIRE_BLAST
 
             deads += 1
             args.state.score += 1 unless target.powerup
