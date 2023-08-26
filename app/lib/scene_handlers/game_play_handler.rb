@@ -1,5 +1,6 @@
 require 'app/lib/music_handler.rb'
 require 'app/lib/cloud_handler.rb'
+require 'app/lib/background_handler.rb'
 require 'app/lib/fireball_handler.rb'
 require 'app/lib/input_handler.rb'
 require 'app/lib/player_handler.rb'
@@ -9,6 +10,11 @@ require 'app/lib/scene_handlers/game_over_handler.rb'
 class GamePlayHandler
   SCENE = 'game_play'
   FPS = 60
+  TEXT_COLOR_WHITE = {
+    r: 255,
+    g: 255,
+    b: 255,
+  }
 
   class << self
 
@@ -38,6 +44,7 @@ class GamePlayHandler
       MusicHandler.start_music(args)
       PlayerHandler.init_player(args)
 
+      BackgroundHandler.init(args)
       FireballHandler.init(args)
       TargetHandler.init(args) 
       CloudHandler.init(args) 
@@ -60,6 +67,7 @@ class GamePlayHandler
       }
 
       args.outputs.sprites << [
+        args.state.background,
         args.state.clouds,
         args.state.player,
         args.state.fireballs,
@@ -72,6 +80,7 @@ class GamePlayHandler
         y: args.grid.h - 40,
         text: "Score: #{args.state.score}",
         size_enum: 4,
+        **TEXT_COLOR_WHITE,
       }
 
       args.outputs.labels << {
@@ -80,6 +89,7 @@ class GamePlayHandler
         text: "Timer: #{(args.state.timer / FPS).round}s",
         size_enum: 4,
         alignment_enum: 2,
+        **TEXT_COLOR_WHITE,
       }
 
       args.outputs.labels << {
@@ -87,6 +97,7 @@ class GamePlayHandler
         y: args.grid.h / 2,
         text: "Game paused",
         size_enum: 4,
+        **TEXT_COLOR_WHITE,
       } if !args.state.play
 
       args.outputs.labels << {
@@ -94,6 +105,7 @@ class GamePlayHandler
         y: 100,
         text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
         size_enum: 4,
+        **TEXT_COLOR_WHITE,
       } if args.state.player.flame_thrower_timer > 0
 
       args.outputs.labels << {
@@ -101,10 +113,12 @@ class GamePlayHandler
         y: 70,
         text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
         size_enum: 4,
+        **TEXT_COLOR_WHITE,
       } if args.state.player.fire_blast_timer > 0
     end
 
     def update_animations(args)
+      BackgroundHandler.animate_background(args)
       FireballHandler.manage_fireballs(args)
       CloudHandler.manage_clouds(args)
       TargetHandler.manage_targets(args)
