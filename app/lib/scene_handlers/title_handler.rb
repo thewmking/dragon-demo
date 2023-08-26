@@ -20,7 +20,17 @@ class TitleHandler
       handle_title_labels(args)
       handle_dragon_select(args)
       handle_powerups(args)
+      handle_lines(args)
       render(args)
+    end
+
+    def handle_lines(args)
+      args.outputs.lines << [
+        x: 60,
+        y: 365,
+        x2: 450,
+        y2: 365,
+      ]
     end
 
     def handle_title_labels(args)
@@ -49,7 +59,7 @@ class TitleHandler
         {
           x: 40,
           y: 500,
-          text: "Look out for powerups:",
+          text: "Look out for powerups! (They stack!)",
         },
         {
           x: 60,
@@ -58,8 +68,20 @@ class TitleHandler
         },
         {
           x: 60,
-          y: 375,
+          y: 405,
+          w: 100,
+          text: "Hold Z for a continuous stream of fire",
+        },
+        {
+          x: 60,
+          y: 330,
           text: "Fire blast:",
+        },
+        {
+          x: 60,
+          y: 290,
+          w: 100,
+          text: "Shoot 3 fireballs at once.",
         },
         {
           x: 40,
@@ -141,8 +163,16 @@ class TitleHandler
 
     def handle_powerups(args)
       args.state.powerups = [
-        TargetHandler.gen_target_powerup(args, powerup: TargetHandler::POWERUP_FIRE_BLAST, x: 200, y: 335 ),
-        TargetHandler.gen_target_powerup(args, powerup: TargetHandler::POWERUP_FLAMETHROWER, x: 200, y: 410 )
+        TargetHandler.gen_target_powerup(args,
+          powerup: TargetHandler::POWERUP_FIRE_BLAST,
+          x: 200,
+          y: 290,
+        ),
+        TargetHandler.gen_target_powerup(args,
+          powerup: TargetHandler::POWERUP_FLAMETHROWER,
+          x: 200,
+          y: 410,
+        )
       ]
       animate_powerups(args)
     end
