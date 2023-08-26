@@ -21,6 +21,8 @@ class FireballHandler
     end
 
     def spawn_fireball(args, trajectory: TRAJECTORY_RIGHT)
+      # TODO: smooth out multiples happening at once
+      args.outputs.sounds << "sounds/fireball.wav"
       args.state.fireballs << {
         x: args.state.player.x + args.state.player.w - 12,
         y: args.state.player.y + 10,
