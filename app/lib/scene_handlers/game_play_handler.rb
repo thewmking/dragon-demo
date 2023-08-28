@@ -15,6 +15,7 @@ class GamePlayHandler
     g: 255,
     b: 255,
   }
+  GAME_TIME = 10 #30
 
   class << self
 
@@ -36,7 +37,7 @@ class GamePlayHandler
     end
 
     def init_timer(args)
-      args.state.timer ||= 30 * FPS
+      args.state.timer ||= GAME_TIME * FPS
       args.state.timer -= 1 unless args.state.play == false
     end
 
@@ -67,7 +68,7 @@ class GamePlayHandler
       }
 
       args.outputs.sprites << [
-        args.state.background,
+        args.state.backgrounds,
         args.state.clouds,
         args.state.player,
         args.state.fireballs,
@@ -118,7 +119,7 @@ class GamePlayHandler
     end
 
     def update_animations(args)
-      BackgroundHandler.animate_background(args)
+      BackgroundHandler.manage_backgrounds(args)
       FireballHandler.manage_fireballs(args)
       CloudHandler.manage_clouds(args)
       TargetHandler.manage_targets(args)
