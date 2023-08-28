@@ -22,20 +22,18 @@ class BackgroundHandler
       return unless args.state.play
 
       puts "background count: #{args.state.backgrounds.length}"
-      # TODO: figure out what is going on with this logic
 
       args.state.backgrounds.each do |background|
+        background.x -= 0.5
+
         if past_cutoff(background)
           background.dead = true
-          next
         end
         
         if partially_on_screen(args, background)
-          return if args.state.backgrounds.count > 2
-          # TODO: do I need to factor in background speed here?
+          next if args.state.backgrounds.count > 2
           args.state.backgrounds << spawn_background(x: background.x + BACKGROUND_W)
-        end
-        background.x -= 20
+        end        
       end
 
       reject_backgrounds(args)
@@ -46,11 +44,11 @@ class BackgroundHandler
     end
 
     def past_cutoff(background)
-      background.x < -BACKGROUND_W
+      background.x < (0-BACKGROUND_W)
     end
 
     def partially_on_screen(args, background)
-      background.x > -BACKGROUND_W &&
+      background.x > (0-BACKGROUND_W) &&
         background.x <= (args.grid.w - BACKGROUND_W)
     end
 

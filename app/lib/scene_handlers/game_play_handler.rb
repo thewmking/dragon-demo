@@ -15,7 +15,7 @@ class GamePlayHandler
     g: 255,
     b: 255,
   }
-  GAME_TIME = 10 #30
+  GAME_TIME = 30
 
   class << self
 
