@@ -10,10 +10,15 @@ require 'app/lib/scene_handlers/game_over_handler.rb'
 class GamePlayHandler
   SCENE = 'game_play'
   FPS = 60
-  TEXT_COLOR_WHITE = {
+  COLOR_WHITE = {
     r: 255,
     g: 255,
     b: 255,
+  }
+  COLOR_BLACK = {
+    r: 0,
+    g: 0,
+    b: 0,
   }
   GAME_TIME = 30
   GLOBAL_MUTE = false
@@ -81,46 +86,9 @@ class GamePlayHandler
         args.state.explosions,
       ]
 
-      args.outputs.labels << {
-        x: 40,
-        y: args.grid.h - 40,
-        text: "Score: #{args.state.score}",
-        size_enum: 4,
-        **TEXT_COLOR_WHITE,
-      }
-
-      args.outputs.labels << {
-        x: args.grid.w - 40,
-        y: args.grid.h - 40,
-        text: "Timer: #{(args.state.timer / FPS).round}s",
-        size_enum: 4,
-        alignment_enum: 2,
-        **TEXT_COLOR_WHITE,
-      }
-
-      args.outputs.labels << {
-        x: (args.grid.w / 2) - 80,
-        y: args.grid.h / 2,
-        text: "Game paused",
-        size_enum: 4,
-        **TEXT_COLOR_WHITE,
-      } if !args.state.play
-
-      args.outputs.labels << {
-        x: 20,
-        y: 100,
-        text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
-        size_enum: 4,
-        **TEXT_COLOR_WHITE,
-      } if args.state.player.flame_thrower_timer > 0
-
-      args.outputs.labels << {
-        x: 20,
-        y: 70,
-        text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
-        size_enum: 4,
-        **TEXT_COLOR_WHITE,
-      } if args.state.player.fire_blast_timer > 0
+      render_top_labels(args)
+      render_powerup_labels(args)
+      render_pause_overlay(args) if !args.state.play
     end
 
     def update_animations(args)
@@ -129,6 +97,93 @@ class GamePlayHandler
       CloudHandler.manage_clouds(args)
       TargetHandler.manage_targets(args)
       ExplosionHandler.manage_explosions(args)
+    end
+
+    # TODO: DRY!
+    def render_top_labels(args)
+      size_enum = 4
+      score_text = "Score: #{args.state.score}"
+      score_w, score_h = args.gtk.calcstringbox score_text, size_enum
+
+      # score background
+      args.outputs.primitives << {
+        x: 0,
+        y: args.grid.h - 100,
+        w: score_w + 100,
+        h: 100,
+        **COLOR_BLACK,
+        a: 175,
+      }.solid!
+
+      # score label
+      args.outputs.labels << {
+        x: 40,
+        y: args.grid.h - 40,
+        text: score_text,
+        size_enum: size_enum,
+        **COLOR_WHITE,
+      }
+
+      timer_text = "Timer: #{(args.state.timer / FPS).round}s"
+      timer_w, timer_h = args.gtk.calcstringbox timer_text, size_enum
+
+      # timer background
+      timer_bck_w = timer_w + 100
+      args.outputs.primitives << {
+        x: args.grid.w - timer_bck_w,
+        y: args.grid.h - 100,
+        w: timer_bck_w,
+        h: 100,
+        **COLOR_BLACK,
+        a: 175,
+      }.solid!
+
+      # timer label
+      args.outputs.labels << {
+        x: args.grid.w - 40,
+        y: args.grid.h - 40,
+        text: timer_text,
+        size_enum: 4,
+        alignment_enum: 2,
+        **COLOR_WHITE,
+      }
+    end
+
+    def render_powerup_labels(args)
+      args.outputs.labels << {
+        x: 20,
+        y: 100,
+        text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
+        size_enum: 4,
+        **COLOR_WHITE,
+      } if args.state.player.flame_thrower_timer > 0
+
+      args.outputs.labels << {
+        x: 20,
+        y: 70,
+        text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
+        size_enum: 4,
+        **COLOR_WHITE,
+      } if args.state.player.fire_blast_timer > 0
+    end
+
+    def render_pause_overlay(args)
+      args.outputs.labels << {
+        x: (args.grid.w / 2) - 80,
+        y: args.grid.h / 2,
+        text: "Game paused",
+        size_enum: 4,
+        **COLOR_BLACK,
+      }
+
+      args.outputs.primitives << {
+        x: 0,
+        y: 0,
+        w: args.grid.w,
+        h: args.grid.h,
+        **COLOR_WHITE,
+        a: 220,
+      }.solid!
     end
 
   end
