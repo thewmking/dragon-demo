@@ -1,4 +1,5 @@
 require 'app/lib/input_handler.rb'
+require 'app/lib/target_handler.rb'
 
 class PlayerHandler
 
@@ -39,12 +40,14 @@ class PlayerHandler
         source_w: 100,
         source_h: 80,
         speed: InputHandler.diagonal?(args) ? 8 : 16,
-        flame_thrower_timer: 0,
-        fire_blast_timer: 0,
+        TargetHandler::FLAMETHROWER_TIMER => 0,
+        TargetHandler::FIRE_BLAST_TIMER => 0,
       }
 
-      args.state.player.flame_thrower_timer -= 1 if args.state.player.flame_thrower_timer > 0
-      args.state.player.fire_blast_timer -= 1 if args.state.player.fire_blast_timer > 0
+      unless !args.state.play
+        args.state.player.flame_thrower_timer -= 1 if args.state.player.flame_thrower_timer > 0
+        args.state.player.fire_blast_timer -= 1 if args.state.player.fire_blast_timer > 0
+      end
 
       if SHEET_VARIANTS.include? args.state.dragon.variant
         animate_player_sheet(args) 
@@ -81,12 +84,8 @@ class PlayerHandler
       args.state.player.y = 0 if args.state.player.y < 0
     end
 
-    def enable_flame_thrower(args)
-      args.state.player.flame_thrower_timer = GamePlayHandler::FPS * 5
-    end
-
-    def enable_fire_blast(args)
-      args.state.player.fire_blast_timer = GamePlayHandler::FPS * 5
+    def enable_powerup(args, type, time = 5)
+      args.state.player[type] = GamePlayHandler::FPS * time
     end
 
   end

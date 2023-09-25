@@ -4,10 +4,18 @@ class TargetHandler
   POWERUP_FLAMETHROWER = 'flamethrower'
   POWERUP_FIRE_BLAST = 'fire_blast'
 
+  FLAMETHROWER_TIMER = :flame_thrower_timer
+  FIRE_BLAST_TIMER = :fire_blast_timer
+
   POWERUPS = [
     POWERUP_FLAMETHROWER,
     POWERUP_FIRE_BLAST,
   ]
+
+  POWERUP_TIMER_MAP = {
+    POWERUP_FLAMETHROWER => FLAMETHROWER_TIMER,
+    POWERUP_FIRE_BLAST => FIRE_BLAST_TIMER,
+  }
 
   class << self
     def init(args)

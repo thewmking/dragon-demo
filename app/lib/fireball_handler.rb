@@ -62,8 +62,10 @@ class FireballHandler
 
             # TODO: sparkle explosion on powerup hit
             ExplosionHandler.spawn_explosion(args, target)
-            PlayerHandler.enable_flame_thrower(args) if target.powerup == TargetHandler::POWERUP_FLAMETHROWER
-            PlayerHandler.enable_fire_blast(args) if target.powerup == TargetHandler::POWERUP_FIRE_BLAST
+            if target.powerup
+              powerup_timer = TargetHandler::POWERUP_TIMER_MAP[target.powerup]
+              PlayerHandler.enable_powerup(args, powerup_timer)
+            end
 
             deads += 1
             args.state.score += 1 unless target.powerup
