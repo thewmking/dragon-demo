@@ -16,8 +16,13 @@ class GamePlayHandler
     b: 255,
   }
   GAME_TIME = 30
+  GLOBAL_MUTE = false
 
   class << self
+
+    def muted?
+      GLOBAL_MUTE
+    end
 
     def game_play_tick args
       init_timer(args)

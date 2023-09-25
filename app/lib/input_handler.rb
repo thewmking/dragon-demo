@@ -15,7 +15,7 @@ class InputHandler
 
     def handle_command_input(args)
       if mute_input?(args)
-        args.audio[:music].paused = !args.audio[:music].paused
+        args.audio[:music]&.paused = !args.audio[:music]&.paused
       end
 
       handle_pause(args)
@@ -34,9 +34,9 @@ class InputHandler
         args.state.play = !args.state.play
 
         if args.state.play == false
-          args.audio[:music].paused = true
+          args.audio[:music]&.paused = true
         else
-          args.audio[:music].paused = false
+          args.audio[:music]&.paused = false
         end
       end
     end

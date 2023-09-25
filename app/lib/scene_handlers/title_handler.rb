@@ -11,7 +11,7 @@ class TitleHandler
 
     def title_tick(args)
       if InputHandler.fire_input?(args)
-        args.outputs.sounds << "sounds/game-over.wav"
+        args.outputs.sounds << "sounds/game-over.wav" unless GamePlayHandler.muted?
         args.state.scene = GamePlayHandler::SCENE
         return
       end

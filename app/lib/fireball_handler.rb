@@ -1,6 +1,7 @@
 require 'app/lib/explosion_handler.rb'
 require 'app/lib/player_handler.rb'
 require 'app/lib/target_handler.rb'
+require 'app/lib/scene_handlers/game_play_handler.rb'
 
 class FireballHandler
   class << self
@@ -22,7 +23,7 @@ class FireballHandler
 
     def spawn_fireball(args, trajectory: TRAJECTORY_RIGHT)
       # TODO: smooth out multiples happening at once
-      args.outputs.sounds << "sounds/fireball.wav"
+      args.outputs.sounds << "sounds/fireball.wav" unless GamePlayHandler.muted?
       args.state.fireballs << {
         x: args.state.player.x + args.state.player.w - 12,
         y: args.state.player.y + 10,
@@ -57,7 +58,7 @@ class FireballHandler
         args.state.targets.each do |target|
           next if target.x > args.grid.w
           if args.geometry.intersect_rect?(target, fireball)
-            args.outputs.sounds << "sounds/target.wav"
+            args.outputs.sounds << "sounds/target.wav" unless GamePlayHandler.muted?
             fireball.dead, target.dead = true, true
 
             # TODO: sparkle explosion on powerup hit
