@@ -149,6 +149,7 @@ class GamePlayHandler
       }
     end
 
+    # TODO: render these as the icon instead of text
     def render_powerup_labels(args)
       either_timer = args.state.player.flame_thrower_timer > 0 || args.state.player.fire_blast_timer > 0
 
@@ -163,7 +164,7 @@ class GamePlayHandler
 
       args.outputs.labels << {
         x: 40,
-        y: 90,
+        y: 75,
         text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
         size_enum: 4,
         **COLOR_WHITE,
@@ -171,11 +172,19 @@ class GamePlayHandler
 
       args.outputs.labels << {
         x: 40,
-        y: 60,
+        y: 45,
         text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
         size_enum: 4,
         **COLOR_WHITE,
       } if args.state.player.fire_blast_timer > 0
+
+      args.outputs.labels << {
+        x: 40,
+        y: 105,
+        text: "BLUE FLAME! Time left: #{(args.state.player.blue_flame_timer / FPS).round}s",
+        size_enum: 4,
+        **COLOR_WHITE,
+      } if args.state.player.blue_flame_timer > 0
     end
 
     def render_pause_overlay(args)

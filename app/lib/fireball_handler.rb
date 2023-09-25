@@ -24,13 +24,20 @@ class FireballHandler
     def spawn_fireball(args, trajectory: TRAJECTORY_RIGHT)
       # TODO: smooth out multiples happening at once
       args.outputs.sounds << "sounds/fireball.wav" unless GamePlayHandler.muted?
-      args.state.fireballs << {
+
+      args.state.fireballs << fireball_init_obj(args, trajectory)
+    end
+
+    def fireball_init_obj(args, trajectory)
+      is_blue = args.state.player.blue_flame_timer > 0
+      {
         x: args.state.player.x + args.state.player.w - 12,
         y: args.state.player.y + 10,
         w: 57,
         h: 31,
-        path: 'sprites/fire/fireball-0.png',
+        path: "sprites/fire/#{path_color(is_blue)}-0.png",
         trajectory: trajectory,
+        is_blue: is_blue,
       }
     end
 
@@ -38,7 +45,7 @@ class FireballHandler
       return unless args.state.play
       args.state.fireballs.each do |f|
         sprite_index = 0.frame_index(count: 7, hold_for: 8, repeat: true)
-        f.path = "sprites/fire/fireball-#{sprite_index}.png"
+        f.path = "sprites/fire/#{path_color(f.is_blue)}-#{sprite_index}.png"
       end
     end
 
@@ -59,7 +66,8 @@ class FireballHandler
           next if target.x > args.grid.w
           if args.geometry.intersect_rect?(target, fireball)
             args.outputs.sounds << "sounds/target.wav" unless GamePlayHandler.muted?
-            fireball.dead, target.dead = true, true
+            target.dead = true
+            fireball.dead = true unless fireball.is_blue
 
             # TODO: sparkle explosion on powerup hit
             ExplosionHandler.spawn_explosion(args, target)
@@ -80,6 +88,10 @@ class FireballHandler
       deads.times do
         TargetHandler.spawn_target(args)
       end
+    end
+
+    def path_color(is_blue=false)
+      is_blue ? 'fireball-blue' : 'fireball'
     end
 
   end

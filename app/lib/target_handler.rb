@@ -1,20 +1,27 @@
 class TargetHandler
   TARGET_SPEED_RANGE = [1,2,3]
+  POWERUP_FACTOR = 0.05
+  # POWERUP_FACTOR = 0.5 # for testing
 
+  # TODO: HUGE FIREBALLS
   POWERUP_FLAMETHROWER = 'flamethrower'
   POWERUP_FIRE_BLAST = 'fire_blast'
+  POWERUP_BLUE_FLAME = 'blue_flame'
 
   FLAMETHROWER_TIMER = :flame_thrower_timer
   FIRE_BLAST_TIMER = :fire_blast_timer
+  BLUE_FLAME_TIMER = :blue_flame_timer
 
   POWERUPS = [
     POWERUP_FLAMETHROWER,
     POWERUP_FIRE_BLAST,
+    POWERUP_BLUE_FLAME,
   ]
 
   POWERUP_TIMER_MAP = {
     POWERUP_FLAMETHROWER => FLAMETHROWER_TIMER,
     POWERUP_FIRE_BLAST => FIRE_BLAST_TIMER,
+    POWERUP_BLUE_FLAME => BLUE_FLAME_TIMER,
   }
 
   class << self
@@ -30,7 +37,7 @@ class TargetHandler
 
     def spawn_target(args)
       return if args.state.targets.count > 5
-      return spawn_powerup_target(args) if rand < 0.05
+      return spawn_powerup_target(args) if rand < POWERUP_FACTOR
 
       args.state.targets << gen_target_normal(args)
     end

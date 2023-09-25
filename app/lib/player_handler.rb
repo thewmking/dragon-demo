@@ -42,11 +42,13 @@ class PlayerHandler
         speed: InputHandler.diagonal?(args) ? 8 : 16,
         TargetHandler::FLAMETHROWER_TIMER => 0,
         TargetHandler::FIRE_BLAST_TIMER => 0,
+        TargetHandler::BLUE_FLAME_TIMER => 0,
       }
 
       unless !args.state.play
         args.state.player.flame_thrower_timer -= 1 if args.state.player.flame_thrower_timer > 0
         args.state.player.fire_blast_timer -= 1 if args.state.player.fire_blast_timer > 0
+        args.state.player.blue_flame_timer -= 1 if args.state.player.blue_flame_timer > 0
       end
 
       if SHEET_VARIANTS.include? args.state.dragon.variant
@@ -84,8 +86,8 @@ class PlayerHandler
       args.state.player.y = 0 if args.state.player.y < 0
     end
 
-    def enable_powerup(args, type, time = 5)
-      args.state.player[type] = GamePlayHandler::FPS * time
+    def enable_powerup(args, powerup_timer, time = 5)
+      args.state.player[powerup_timer] = GamePlayHandler::FPS * time
     end
 
   end

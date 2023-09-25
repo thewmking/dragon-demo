@@ -26,10 +26,18 @@ class TitleHandler
 
     def handle_lines(args)
       args.outputs.lines << [
-        x: 60,
-        y: 365,
-        x2: 450,
-        y2: 365,
+        {
+          x: 60,
+          y: 365,
+          x2: 450,
+          y2: 365,
+        },
+        {
+          x: 60,
+          y: 250,
+          x2: 450,
+          y2: 250,
+        }
       ]
     end
 
@@ -82,6 +90,17 @@ class TitleHandler
           y: 290,
           w: 100,
           text: "Shoot 3 fireballs at once.",
+        },
+        {
+          x: 60,
+          y: 215,
+          text: "Blue flame:",
+        },
+        {
+          x: 60,
+          y: 170,
+          w: 100,
+          text: "Fireballs won't disappear after hitting a target",
         },
         {
           x: 40,
@@ -172,7 +191,12 @@ class TitleHandler
           powerup: TargetHandler::POWERUP_FLAMETHROWER,
           x: 200,
           y: 410,
-        )
+        ),
+        TargetHandler.gen_target_powerup(args,
+          powerup: TargetHandler::POWERUP_BLUE_FLAME,
+          x: 200,
+          y: 175,
+        ),
       ]
       animate_powerups(args)
     end
