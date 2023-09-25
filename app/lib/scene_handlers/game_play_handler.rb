@@ -150,17 +150,28 @@ class GamePlayHandler
     end
 
     def render_powerup_labels(args)
+      either_timer = args.state.player.flame_thrower_timer > 0 || args.state.player.fire_blast_timer > 0
+
+      args.outputs.primitives << {
+        x: 0,
+        y: 0,
+        w: 600,
+        h: 125,
+        **COLOR_BLACK,
+        a: 175,
+      }.solid! if either_timer
+
       args.outputs.labels << {
-        x: 20,
-        y: 100,
+        x: 40,
+        y: 90,
         text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
         size_enum: 4,
         **COLOR_WHITE,
       } if args.state.player.flame_thrower_timer > 0
 
       args.outputs.labels << {
-        x: 20,
-        y: 70,
+        x: 40,
+        y: 60,
         text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
         size_enum: 4,
         **COLOR_WHITE,
