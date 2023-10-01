@@ -69,15 +69,17 @@ class FireballHandler
             target.dead = true
             fireball.dead = true unless fireball.is_blue
 
-            # TODO: sparkle explosion on powerup hit
-            ExplosionHandler.spawn_explosion(args, target)
             if target.powerup
+              ExplosionHandler.spawn_sparkle(args, target)
               powerup_timer = TargetHandler::POWERUP_TIMER_MAP[target.powerup]
               PlayerHandler.enable_powerup(args, powerup_timer)
+            else
+              ex_color = fireball.is_blue ? 'blue' : nil
+              ExplosionHandler.spawn_explosion(args, target, ex_color)
+              args.state.score += 1 unless target.powerup
             end
 
             deads += 1
-            args.state.score += 1 unless target.powerup
           end
         end
       end

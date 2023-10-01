@@ -84,6 +84,7 @@ class GamePlayHandler
         args.state.fireballs,
         args.state.targets,
         args.state.explosions,
+        args.state.sparkles,
       ]
 
       render_top_labels(args)
@@ -97,6 +98,7 @@ class GamePlayHandler
       CloudHandler.manage_clouds(args)
       TargetHandler.manage_targets(args)
       ExplosionHandler.manage_explosions(args)
+      ExplosionHandler.manage_sparkles(args)
     end
 
     # TODO: DRY!
