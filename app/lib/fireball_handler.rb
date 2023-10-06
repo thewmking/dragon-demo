@@ -71,7 +71,7 @@ class FireballHandler
 
             if target.powerup
               ExplosionHandler.spawn_sparkle(args, target)
-              powerup_timer = TargetHandler::POWERUP_TIMER_MAP[target.powerup]
+              powerup_timer = TargetHandler::POWERUP_TIMER_MAP[target.powerup][:timer]
               PlayerHandler.enable_powerup(args, powerup_timer)
             else
               ex_color = fireball.is_blue ? 'blue' : nil

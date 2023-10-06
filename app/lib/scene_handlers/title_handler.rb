@@ -62,7 +62,12 @@ class TitleHandler
         {
           x: 40,
           y: args.grid.h - 160,
-          text: "Controls: Arrows or WASD to move | Z or J to fire | Gamepad",
+          text: "Controls: Arrows or WASD to move | Z or J to fire | P to pause",
+        },
+        {
+          x: 60,
+          y: args.grid.h - 185,
+          text: "- Gamepad works too!",
         },
         {
           x: 40,
@@ -160,7 +165,7 @@ class TitleHandler
       args.state.dragon.variant = PlayerHandler::DRAGON_VARIANTS[args.state.color_index]
 
       if PlayerHandler::SHEET_VARIANTS.include? args.state.dragon.variant
-        animate_dragon_sheet(args) 
+        animate_dragon_sheet(args)
       else
         animate_dragon(args)
       end

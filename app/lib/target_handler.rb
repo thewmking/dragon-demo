@@ -19,16 +19,25 @@ class TargetHandler
   ]
 
   POWERUP_TIMER_MAP = {
-    POWERUP_FLAMETHROWER => FLAMETHROWER_TIMER,
-    POWERUP_FIRE_BLAST => FIRE_BLAST_TIMER,
-    POWERUP_BLUE_FLAME => BLUE_FLAME_TIMER,
+    POWERUP_FLAMETHROWER => {
+      text: "HOLD Z FOR FLAMETHROWER!",
+      timer: FLAMETHROWER_TIMER,
+    },
+    POWERUP_FIRE_BLAST => {
+      text: "FIRE BLAST ENGAGED!",
+      timer: FIRE_BLAST_TIMER,
+    },
+    POWERUP_BLUE_FLAME => {
+      text: "BLUE FLAME!",
+      timer: BLUE_FLAME_TIMER,
+    },
   }
 
   class << self
     def init(args)
       if args.state.targets.nil?
         args.state.targets ||= []
-        3.times do 
+        3.times do
           spawn_target(args)
         end
       end
@@ -46,6 +55,7 @@ class TargetHandler
       args.state.targets << gen_target_powerup(args)
     end
 
+    # TODO: add back green target worth 5 points but make it go up and down and move faster
     def gen_target_normal(args, x: nil, y: nil)
       size = 64
       x ||= size + args.grid.w

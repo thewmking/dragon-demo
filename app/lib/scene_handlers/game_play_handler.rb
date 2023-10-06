@@ -1,3 +1,4 @@
+require 'app/lib/target_handler.rb'
 require 'app/lib/music_handler.rb'
 require 'app/lib/cloud_handler.rb'
 require 'app/lib/background_handler.rb'
@@ -20,7 +21,11 @@ class GamePlayHandler
     g: 0,
     b: 0,
   }
+
+  # TODO: add checkpoints to increase game time
+  # TODO: add baddies, health, damage counters
   GAME_TIME = 30
+
   GLOBAL_MUTE = false
 
   class << self
@@ -57,8 +62,8 @@ class GamePlayHandler
 
       BackgroundHandler.init(args)
       FireballHandler.init(args)
-      TargetHandler.init(args) 
-      CloudHandler.init(args) 
+      TargetHandler.init(args)
+      CloudHandler.init(args)
       ExplosionHandler.init(args)
 
       InputHandler.parse_directional_input(args)
@@ -153,40 +158,28 @@ class GamePlayHandler
 
     # TODO: render these as the icon instead of text
     def render_powerup_labels(args)
-      either_timer = args.state.player.flame_thrower_timer > 0 || args.state.player.fire_blast_timer > 0
+      active_timers = PlayerHandler.active_timers(args)
 
       args.outputs.primitives << {
         x: 0,
         y: 0,
         w: 600,
-        h: 125,
+        h: active_timers.length * 40 + 5,
         **COLOR_BLACK,
         a: 175,
-      }.solid! if either_timer
+      }.solid! unless active_timers.empty?
 
-      args.outputs.labels << {
-        x: 40,
-        y: 75,
-        text: "HOLD Z FOR FLAMETHROWER! Time left: #{(args.state.player.flame_thrower_timer / FPS).round}s",
-        size_enum: 4,
-        **COLOR_WHITE,
-      } if args.state.player.flame_thrower_timer > 0
+      label_heights = [40, 72, 105]
 
-      args.outputs.labels << {
-        x: 40,
-        y: 45,
-        text: "FIRE BLAST ENGAGED! Time left: #{(args.state.player.fire_blast_timer / FPS).round}s",
-        size_enum: 4,
-        **COLOR_WHITE,
-      } if args.state.player.fire_blast_timer > 0
-
-      args.outputs.labels << {
-        x: 40,
-        y: 105,
-        text: "BLUE FLAME! Time left: #{(args.state.player.blue_flame_timer / FPS).round}s",
-        size_enum: 4,
-        **COLOR_WHITE,
-      } if args.state.player.blue_flame_timer > 0
+      active_timers&.each_with_index do |t, idx|
+        args.outputs.labels << {
+          x: 40,
+          y: label_heights.slice(idx),
+          text: "#{t[:text]} Time left: #{(args.state.player[t[:timer]] / FPS).round}s",
+          size_enum: 4,
+          **COLOR_WHITE,
+        }
+      end
     end
 
     def render_pause_overlay(args)

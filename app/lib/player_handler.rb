@@ -46,13 +46,13 @@ class PlayerHandler
       }
 
       unless !args.state.play
-        args.state.player.flame_thrower_timer -= 1 if args.state.player.flame_thrower_timer > 0
-        args.state.player.fire_blast_timer -= 1 if args.state.player.fire_blast_timer > 0
-        args.state.player.blue_flame_timer -= 1 if args.state.player.blue_flame_timer > 0
+        TargetHandler::POWERUP_TIMER_MAP.each do |k,v|
+          args.state.player[v[:timer]] -=1 if args.state.player[v[:timer]] > 0
+        end
       end
 
       if SHEET_VARIANTS.include? args.state.dragon.variant
-        animate_player_sheet(args) 
+        animate_player_sheet(args)
       else
         animate_player(args)
       end
@@ -88,6 +88,14 @@ class PlayerHandler
 
     def enable_powerup(args, powerup_timer, time = 5)
       args.state.player[powerup_timer] = GamePlayHandler::FPS * time
+    end
+
+    def active_timers(args)
+      timers = []
+      TargetHandler::POWERUP_TIMER_MAP.each do |k,v|
+        timers << v  if args.state.player[v[:timer]] > 0
+      end
+      timers
     end
 
   end
