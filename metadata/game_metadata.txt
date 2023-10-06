@@ -3,7 +3,7 @@ devid=thewmking
 devtitle=thewmking
 gameid=dragon-attack
 gametitle=Dragon Attack
-version=0.3
+version=0.4
 icon=metadata/icon.png
 
 # === Flags available at all licensing tiers ===
